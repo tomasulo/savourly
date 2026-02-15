@@ -21,7 +21,19 @@
     "subtitle": "Deine persönliche Rezeptsammlung",
     "getStarted": "Loslegen",
     "browseRecipes": "Rezepte durchsuchen",
-    "addFirstRecipe": "Dein erstes Rezept hinzufügen"
+    "addFirstRecipe": "Dein erstes Rezept hinzufügen",
+    "whySavourly": "Warum Savourly?",
+    "organizeTitle": "Organisieren",
+    "organizeDescription": "Bewahre all deine Rezepte an einem schönen Ort auf. Verliere nie wieder ein Familienrezept.",
+    "discoverTitle": "Entdecken",
+    "discoverDescription": "Suche nach Küche, Schwierigkeit, Zeit und mehr. Finde sofort das perfekte Rezept.",
+    "cookTitle": "Kochen",
+    "cookDescription": "Schritt-für-Schritt-Anleitungen mit anpassbaren Portionen. Koche mit Vertrauen.",
+    "popularRecipes": "Beliebte Rezepte",
+    "getInspired": "Lass dich von köstlichen Rezepten inspirieren",
+    "exploreAllRecipes": "Alle Rezepte erkunden →",
+    "readyToStartCooking": "Bereit zum Kochen?",
+    "joinSavourly": "Werde Teil von Savourly und organisiere deine Rezepte auf schöne Weise"
   },
   "recipe": {
     "title": "Rezept",
