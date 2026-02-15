@@ -7,7 +7,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "loading": "Loading...",
-    "error": "Something went wrong"
+    "error": "Something went wrong",
+    "saving": "Saving..."
   },
   "nav": {
     "home": "Home",
@@ -27,6 +28,23 @@
     "easy": "Easy",
     "medium": "Medium",
     "hard": "Hard",
-    "minutes": "min"
+    "minutes": "min",
+    "imageUrl": "Image URL",
+    "addNew": "Add New Recipe",
+    "basicInfo": "Basic Information",
+    "details": "Details",
+    "titlePlaceholder": "What are you cooking?",
+    "descriptionPlaceholder": "A brief description of the dish...",
+    "cuisinePlaceholder": "e.g., Italian",
+    "addIngredient": "+ Add Ingredient",
+    "addStep": "+ Add Step",
+    "saveRecipe": "Save Recipe",
+    "amount": "Amount",
+    "unit": "Unit",
+    "ingredientPlaceholder": "Flour, sugar, etc.",
+    "stepPlaceholder": "Step {number}...",
+    "titleRequired": "Title is required.",
+    "ingredientRequired": "At least one ingredient is required.",
+    "instructionRequired": "At least one instruction step is required."
   }
 }

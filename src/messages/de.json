@@ -7,7 +7,8 @@
     "delete": "Löschen",
     "edit": "Bearbeiten",
     "loading": "Laden...",
-    "error": "Etwas ist schiefgelaufen"
+    "error": "Etwas ist schiefgelaufen",
+    "saving": "Speichere..."
   },
   "nav": {
     "home": "Startseite",
@@ -27,6 +28,23 @@
     "easy": "Einfach",
     "medium": "Mittel",
     "hard": "Schwer",
-    "minutes": "Min"
+    "minutes": "Min",
+    "imageUrl": "Bild-URL",
+    "addNew": "Neues Rezept hinzufügen",
+    "basicInfo": "Grundinformationen",
+    "details": "Details",
+    "titlePlaceholder": "Was kochst du?",
+    "descriptionPlaceholder": "Eine kurze Beschreibung des Gerichts...",
+    "cuisinePlaceholder": "z.B. Italienisch",
+    "addIngredient": "+ Zutat hinzufügen",
+    "addStep": "+ Schritt hinzufügen",
+    "saveRecipe": "Rezept speichern",
+    "amount": "Menge",
+    "unit": "Einheit",
+    "ingredientPlaceholder": "Mehl, Zucker, etc.",
+    "stepPlaceholder": "Schritt {number}...",
+    "titleRequired": "Titel ist erforderlich.",
+    "ingredientRequired": "Mindestens eine Zutat ist erforderlich.",
+    "instructionRequired": "Mindestens ein Zubereitungsschritt ist erforderlich."
   }
 }
