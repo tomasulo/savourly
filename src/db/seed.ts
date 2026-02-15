@@ -202,31 +202,7 @@ export async function seedDatabase(db: Client): Promise<void> {
     return;
   }
 
-  // Prepare all statements for batch execution
-  const statements = [];
-
-  for (const recipe of recipes) {
-    // Insert recipe
-    statements.push({
-      sql: `INSERT INTO recipes (title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [
-        recipe.title,
-        recipe.description,
-        recipe.cuisine,
-        recipe.difficulty,
-        recipe.prep_time_minutes,
-        recipe.cook_time_minutes,
-        recipe.servings,
-        recipe.image_url,
-      ],
-    });
-
-    // Get the recipe ID (we'll need to handle this differently)
-    // For now, we'll use a workaround: insert recipe first, then get last insert id
-  }
-
-  // Since batch doesn't return lastInsertRowid, we need to insert recipes one by one
+  // Insert recipes one by one since we need lastInsertRowid for each
   for (const recipe of recipes) {
     const result = await db.execute({
       sql: `INSERT INTO recipes (title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)

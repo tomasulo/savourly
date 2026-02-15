@@ -11,7 +11,10 @@ export async function getDb(): Promise<Client> {
       authToken: process.env.TURSO_AUTH_TOKEN,
     });
     await initializeSchema(_db);
-    await seedDatabase(_db);
+    // Only seed in development — prevents runaway inserts on serverless cold starts
+    if (process.env.NODE_ENV !== "production") {
+      await seedDatabase(_db);
+    }
   }
   return _db;
 }
