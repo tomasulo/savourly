@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { getRecipeWithDetails, getCookingLogs } from "@/db/queries";
+import { RecipeDetail } from "./recipe-detail";
 
 export default async function RecipeDetailPage({
   params,
@@ -11,11 +13,14 @@ export default async function RecipeDetailPage({
     notFound();
   }
 
-  return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
-      <p className="text-muted-foreground">
-        Recipe #{id} — detail view coming in issue #3.
-      </p>
-    </main>
-  );
+  const recipeId = Number(id);
+  const recipe = getRecipeWithDetails(recipeId);
+
+  if (!recipe) {
+    notFound();
+  }
+
+  const cookingLogs = getCookingLogs(recipeId);
+
+  return <RecipeDetail recipe={recipe} cookingLogs={cookingLogs} />;
 }
