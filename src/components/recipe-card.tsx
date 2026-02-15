@@ -27,43 +27,61 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
 
   return (
     <Link href={`/recipes/${recipe.id}`}>
-      <Card className="group overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1">
-        {/* Image Section - 60% of card height */}
-        <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
+      <Card className="group overflow-hidden rounded-xl border border-border/50 bg-card shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        {/* Image Section - Enhanced with overlay */}
+        <div className="relative h-56 w-full overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
           {recipe.image_url ? (
-            <Image
-              src={recipe.image_url}
-              alt={recipe.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition-transform group-hover:scale-105"
-              priority={false}
-            />
+            <>
+              <Image
+                src={recipe.image_url}
+                alt={recipe.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                priority={false}
+              />
+              {/* Gradient overlay for better text contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+              {/* Cuisine badge floating on image */}
+              {recipe.cuisine && (
+                <div className="absolute top-3 right-3">
+                  <Badge className="bg-white/90 backdrop-blur-sm text-foreground border-0 shadow-lg">
+                    🌍 {recipe.cuisine}
+                  </Badge>
+                </div>
+              )}
+            </>
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <span className="text-6xl">🍳</span>
+              <span className="text-7xl group-hover:scale-110 transition-transform duration-300">
+                🍳
+              </span>
             </div>
           )}
         </div>
 
         {/* Content Section */}
-        <CardContent className="p-4 space-y-2">
-          <h3 className="text-xl font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+        <CardContent className="p-5 space-y-3">
+          <h3 className="text-2xl font-bold line-clamp-2 group-hover:text-primary transition-colors duration-200">
             {recipe.title}
           </h3>
 
           {recipe.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2">
+            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
               {recipe.description}
             </p>
           )}
 
-          <div className="flex flex-wrap items-center gap-2 pt-2">
+          <div className="flex items-center gap-3 pt-2">
             {totalTime > 0 && (
-              <Badge variant="secondary" className="gap-1">
-                <span>⏱️</span>
-                {totalTime} {tTime("minutes")}
-              </Badge>
+              <span className="text-sm text-muted-foreground">
+                ⏱️ {totalTime} {tTime("minutes")}
+              </span>
+            )}
+
+            {totalTime > 0 && (
+              <span className="text-muted-foreground">•</span>
             )}
 
             <Badge
@@ -72,13 +90,6 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             >
               {tDiff(recipe.difficulty)}
             </Badge>
-
-            {recipe.cuisine && (
-              <Badge variant="outline" className="gap-1">
-                <span>🌍</span>
-                {recipe.cuisine}
-              </Badge>
-            )}
           </div>
         </CardContent>
       </Card>
