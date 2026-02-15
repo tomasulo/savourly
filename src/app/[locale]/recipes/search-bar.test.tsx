@@ -41,8 +41,10 @@ describe('SearchBar', () => {
   })
 
   it('renders search icon', () => {
-    render(<SearchBar />)
-    expect(screen.getByText('🔍')).toBeInTheDocument()
+    const { container } = render(<SearchBar />)
+    // Check for the SVG icon instead of emoji
+    const icon = container.querySelector('svg')
+    expect(icon).toBeInTheDocument()
   })
 
   it('updates input value when user types', async () => {

@@ -5,6 +5,7 @@ import { FilterChips } from "./filter-chips";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
+import { UtensilsCrossed } from "lucide-react";
 
 interface RecipesPageProps {
   searchParams: Promise<{
@@ -57,7 +58,7 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
       <div className="mx-auto max-w-7xl px-4 py-8">
         {recipes.length === 0 ? (
           <div className="flex min-h-[400px] flex-col items-center justify-center text-center">
-            <div className="text-8xl mb-6">🍽️</div>
+            <UtensilsCrossed size={64} className="text-muted-foreground mb-6" />
             <h2 className="text-2xl font-semibold mb-2">
               {tEmpty("noRecipes")}
             </h2>

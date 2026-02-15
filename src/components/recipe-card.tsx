@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import type { Recipe } from "@/lib/types";
+import { UtensilsCrossed, Globe, Clock } from "lucide-react";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -46,17 +47,18 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
               {/* Cuisine badge floating on image */}
               {recipe.cuisine && (
                 <div className="absolute top-3 right-3">
-                  <Badge className="bg-white/90 backdrop-blur-sm text-foreground border-0 shadow-lg">
-                    🌍 {recipe.cuisine}
+                  <Badge className="bg-white/90 backdrop-blur-sm text-foreground border-0 shadow-lg flex items-center gap-1">
+                    <Globe size={14} /> {recipe.cuisine}
                   </Badge>
                 </div>
               )}
             </>
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <span className="text-7xl group-hover:scale-110 transition-transform duration-300">
-                🍳
-              </span>
+              <UtensilsCrossed
+                size={48}
+                className="text-muted-foreground group-hover:scale-110 transition-transform duration-300"
+              />
             </div>
           )}
         </div>
@@ -75,8 +77,8 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
 
           <div className="flex items-center gap-3 pt-2">
             {totalTime > 0 && (
-              <span className="text-sm text-muted-foreground">
-                ⏱️ {totalTime} {tTime("minutes")}
+              <span className="text-sm text-muted-foreground flex items-center gap-1">
+                <Clock size={14} /> {totalTime} {tTime("minutes")}
               </span>
             )}
 

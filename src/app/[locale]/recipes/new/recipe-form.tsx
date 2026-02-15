@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createRecipe } from "./actions";
+import { X } from "lucide-react";
 
 interface IngredientRow {
   id: number;
@@ -234,7 +235,7 @@ export default function RecipeForm() {
                 className="text-muted-foreground hover:text-destructive"
                 aria-label={tCommon("delete")}
               >
-                &times;
+                <X size={16} />
               </Button>
             </div>
           ))}
@@ -277,7 +278,7 @@ export default function RecipeForm() {
                 className="mt-1 text-muted-foreground hover:text-destructive"
                 aria-label={tCommon("delete")}
               >
-                &times;
+                <X size={16} />
               </Button>
             </div>
           ))}
