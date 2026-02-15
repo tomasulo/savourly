@@ -44,5 +44,18 @@ export function initializeSchema(db: Database.Database): void {
       notes TEXT,
       FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
     );
+
+    -- Indexes for improved query performance
+    CREATE INDEX IF NOT EXISTS idx_recipes_cuisine ON recipes(cuisine);
+    CREATE INDEX IF NOT EXISTS idx_recipes_difficulty ON recipes(difficulty);
+    CREATE INDEX IF NOT EXISTS idx_recipes_user_id ON recipes(user_id);
+    CREATE INDEX IF NOT EXISTS idx_recipes_created_at ON recipes(created_at);
+
+    CREATE INDEX IF NOT EXISTS idx_ingredients_recipe_id ON ingredients(recipe_id);
+    CREATE INDEX IF NOT EXISTS idx_instructions_recipe_id ON instructions(recipe_id);
+
+    CREATE INDEX IF NOT EXISTS idx_cooking_logs_recipe_id ON cooking_logs(recipe_id);
+    CREATE INDEX IF NOT EXISTS idx_cooking_logs_user_id ON cooking_logs(user_id);
+    CREATE INDEX IF NOT EXISTS idx_cooking_logs_recipe_user ON cooking_logs(recipe_id, user_id);
   `);
 }

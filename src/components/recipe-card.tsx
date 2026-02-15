@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/routing";
@@ -30,10 +31,13 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
         {/* Image Section - 60% of card height */}
         <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
           {recipe.image_url ? (
-            <img
+            <Image
               src={recipe.image_url}
               alt={recipe.title}
-              className="h-full w-full object-cover transition-transform group-hover:scale-105"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover transition-transform group-hover:scale-105"
+              priority={false}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
