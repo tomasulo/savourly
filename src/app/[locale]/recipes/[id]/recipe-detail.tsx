@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { RecipeWithDetails, CookingLog } from "@/lib/types";
+import { Clock, Flame, Timer, Users, BarChart3, Globe, Star, UtensilsCrossed } from "lucide-react";
 
 interface RecipeDetailProps {
   recipe: RecipeWithDetails;
@@ -76,7 +77,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <div className="text-center">
-              <div className="text-6xl mb-4">🍳</div>
+              <UtensilsCrossed size={64} className="mx-auto mb-4 text-muted-foreground" />
               <p className="text-muted-foreground">{t("notFound")}</p>
             </div>
           </div>
@@ -111,7 +112,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
             <div className="flex flex-wrap gap-6">
               {recipe.prep_time_minutes !== null && (
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">⏱️</span>
+                  <Clock size={24} className="text-muted-foreground" />
                   <div>
                     <div className="text-sm text-muted-foreground">
                       {t("prepTime")}
@@ -124,7 +125,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
               )}
               {recipe.cook_time_minutes !== null && (
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">🔥</span>
+                  <Flame size={24} className="text-muted-foreground" />
                   <div>
                     <div className="text-sm text-muted-foreground">
                       {t("cookTime")}
@@ -137,7 +138,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
               )}
               {totalTime > 0 && (
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">⏰</span>
+                  <Timer size={24} className="text-muted-foreground" />
                   <div>
                     <div className="text-sm text-muted-foreground">
                       {t("totalTime")}
@@ -147,14 +148,14 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
                 </div>
               )}
               <div className="flex items-center gap-2">
-                <span className="text-2xl">👥</span>
+                <Users size={24} className="text-muted-foreground" />
                 <div>
                   <div className="text-sm text-muted-foreground">{t("servings")}</div>
                   <div className="font-semibold">{recipe.servings}</div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-2xl">📊</span>
+                <BarChart3 size={24} className="text-muted-foreground" />
                 <div>
                   <div className="text-sm text-muted-foreground">
                     {t("difficulty")}
@@ -169,7 +170,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
               </div>
               {recipe.cuisine && (
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">🌍</span>
+                  <Globe size={24} className="text-muted-foreground" />
                   <div>
                     <div className="text-sm text-muted-foreground">{t("cuisine")}</div>
                     <div className="font-semibold">{recipe.cuisine}</div>
@@ -286,16 +287,16 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
                       {log.rating !== null && (
                         <div className="flex gap-0.5">
                           {Array.from({ length: 5 }, (_, i) => (
-                            <span
+                            <Star
                               key={i}
+                              size={16}
                               className={
                                 i < (log.rating ?? 0)
-                                  ? "text-yellow-500"
+                                  ? "text-yellow-500 fill-yellow-500"
                                   : "text-gray-300"
                               }
-                            >
-                              ★
-                            </span>
+                              fill={i < (log.rating ?? 0) ? "currentColor" : "none"}
+                            />
                           ))}
                         </div>
                       )}

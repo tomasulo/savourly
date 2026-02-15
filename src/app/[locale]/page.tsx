@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getRecipes } from "@/db/queries";
 import { RecipeCard } from "@/components/recipe-card";
+import { BookOpen, Search, ChefHat } from "lucide-react";
 
 export default async function LandingPage() {
   const t = await getTranslations("home");
@@ -77,8 +78,8 @@ export default async function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {/* Feature 1 */}
             <div className="text-center space-y-4 group">
-              <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-200">
-                📚
+              <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <BookOpen size={36} className="text-primary" />
               </div>
               <h3 className="text-2xl font-semibold">{t("organizeTitle")}</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -88,8 +89,8 @@ export default async function LandingPage() {
 
             {/* Feature 2 */}
             <div className="text-center space-y-4 group">
-              <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-200">
-                🔍
+              <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <Search size={36} className="text-primary" />
               </div>
               <h3 className="text-2xl font-semibold">{t("discoverTitle")}</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -99,8 +100,8 @@ export default async function LandingPage() {
 
             {/* Feature 3 */}
             <div className="text-center space-y-4 group">
-              <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-200">
-                👨‍🍳
+              <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <ChefHat size={36} className="text-primary" />
               </div>
               <h3 className="text-2xl font-semibold">{t("cookTitle")}</h3>
               <p className="text-muted-foreground leading-relaxed">

@@ -4,6 +4,7 @@ import { useRouter, usePathname } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "next-intl";
+import { X } from "lucide-react";
 
 interface FilterChipsProps {
   cuisines: string[];
@@ -83,10 +84,10 @@ export function FilterChips({ cuisines }: FilterChipsProps) {
       {hasFilters && (
         <Badge
           variant="secondary"
-          className="cursor-pointer hover:bg-destructive/10 hover:text-destructive"
+          className="cursor-pointer hover:bg-destructive/10 hover:text-destructive flex items-center gap-1"
           onClick={clearFilters}
         >
-          ✕ {tCommon("clearFilters")}
+          <X size={14} /> {tCommon("clearFilters")}
         </Badge>
       )}
     </div>

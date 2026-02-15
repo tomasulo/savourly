@@ -72,8 +72,13 @@ describe('RecipeCard', () => {
   })
 
   it('renders cuisine badge when provided', () => {
-    render(<RecipeCard recipe={mockRecipe} />)
-    expect(screen.getByText(/🌍 Italian/)).toBeInTheDocument()
+    const { container } = render(<RecipeCard recipe={mockRecipe} />)
+    // Find the badge with Italian text (not the description)
+    const badges = screen.getAllByText('Italian')
+    expect(badges.length).toBeGreaterThan(0)
+    // Verify there's an SVG icon (Globe icon) near the cuisine badge
+    const icon = container.querySelector('.lucide-globe')
+    expect(icon).toBeInTheDocument()
   })
 
   it('renders image when image_url is provided', () => {
@@ -83,10 +88,12 @@ describe('RecipeCard', () => {
     expect(image).toHaveAttribute('src', '/images/carbonara.jpg')
   })
 
-  it('renders placeholder when no image_url', () => {
+  it('renders placeholder icon when no image_url', () => {
     const recipeWithoutImage = { ...mockRecipe, image_url: null }
-    render(<RecipeCard recipe={recipeWithoutImage} />)
-    expect(screen.getByText('🍳')).toBeInTheDocument()
+    const { container } = render(<RecipeCard recipe={recipeWithoutImage} />)
+    // Check for the SVG icon instead of emoji
+    const icon = container.querySelector('svg')
+    expect(icon).toBeInTheDocument()
   })
 
   it('does not render description when null', () => {

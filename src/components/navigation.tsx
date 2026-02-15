@@ -5,6 +5,7 @@ import { Link, usePathname } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { ChefHat } from "lucide-react";
 
 export function Navigation() {
   const t = useTranslations("nav");
@@ -28,7 +29,7 @@ export function Navigation() {
       <nav className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <span className="text-2xl">🍳</span>
+          <ChefHat size={24} className="text-primary" />
           <span className="text-xl font-bold tracking-tight">
             {t("title")}
           </span>
