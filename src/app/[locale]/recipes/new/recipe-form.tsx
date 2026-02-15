@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -39,6 +40,9 @@ function createInstructionRow(): InstructionRow {
 }
 
 export default function RecipeForm() {
+  const t = useTranslations("recipe");
+  const tDiff = useTranslations("difficulty");
+  const tCommon = useTranslations("common");
   const [state, formAction, isPending] = useActionState(createRecipe, {});
   const [ingredients, setIngredients] = useState<IngredientRow[]>([
     createIngredientRow(),
@@ -76,31 +80,31 @@ export default function RecipeForm() {
       {/* Basic Info */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Basic Information</CardTitle>
+          <CardTitle className="text-lg">{t("recipeDetails")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">{t("title")} *</Label>
             <Input
               id="title"
               name="title"
-              placeholder="What are you cooking?"
+              placeholder={t("title")}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("description")}</Label>
             <Textarea
               id="description"
               name="description"
-              placeholder="A brief description of the dish..."
+              placeholder={t("description")}
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image_url">Image URL</Label>
+            <Label htmlFor="image_url">{t("imageUrl")}</Label>
             <Input
               id="image_url"
               name="image_url"
@@ -114,35 +118,35 @@ export default function RecipeForm() {
       {/* Metadata */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Details</CardTitle>
+          <CardTitle className="text-lg">{t("recipeDetails")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div className="space-y-2">
-              <Label htmlFor="cuisine">Cuisine</Label>
+              <Label htmlFor="cuisine">{t("cuisine")}</Label>
               <Input
                 id="cuisine"
                 name="cuisine"
-                placeholder="e.g., Italian"
+                placeholder={t("cuisine")}
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Difficulty</Label>
+              <Label>{t("difficulty")}</Label>
               <Select name="difficulty" defaultValue="medium">
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="easy">Easy</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="hard">Hard</SelectItem>
+                  <SelectItem value="easy">{tDiff("easy")}</SelectItem>
+                  <SelectItem value="medium">{tDiff("medium")}</SelectItem>
+                  <SelectItem value="hard">{tDiff("hard")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="prep_time_minutes">Prep Time (min)</Label>
+              <Label htmlFor="prep_time_minutes">{t("prepTime")}</Label>
               <Input
                 id="prep_time_minutes"
                 name="prep_time_minutes"
@@ -153,7 +157,7 @@ export default function RecipeForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="cook_time_minutes">Cook Time (min)</Label>
+              <Label htmlFor="cook_time_minutes">{t("cookTime")}</Label>
               <Input
                 id="cook_time_minutes"
                 name="cook_time_minutes"
@@ -165,7 +169,7 @@ export default function RecipeForm() {
           </div>
 
           <div className="mt-4 w-32 space-y-2">
-            <Label htmlFor="servings">Servings</Label>
+            <Label htmlFor="servings">{t("servings")}</Label>
             <Input
               id="servings"
               name="servings"
@@ -180,7 +184,7 @@ export default function RecipeForm() {
       {/* Ingredients */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Ingredients</CardTitle>
+          <CardTitle className="text-lg">{t("ingredients")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {ingredients.map((ing, index) => (
@@ -191,7 +195,7 @@ export default function RecipeForm() {
               <div className="space-y-1">
                 {index === 0 && (
                   <Label className="text-xs text-muted-foreground">
-                    Amount
+                    {t("amount")}
                   </Label>
                 )}
                 <Input
@@ -204,19 +208,19 @@ export default function RecipeForm() {
               </div>
               <div className="space-y-1">
                 {index === 0 && (
-                  <Label className="text-xs text-muted-foreground">Unit</Label>
+                  <Label className="text-xs text-muted-foreground">{t("unit")}</Label>
                 )}
-                <Input name="ingredient_unit" placeholder="cups" />
+                <Input name="ingredient_unit" placeholder={t("unit")} />
               </div>
               <div className="space-y-1">
                 {index === 0 && (
                   <Label className="text-xs text-muted-foreground">
-                    Ingredient *
+                    {t("ingredient")} *
                   </Label>
                 )}
                 <Input
                   name="ingredient_name"
-                  placeholder="Flour, sugar, etc."
+                  placeholder={t("ingredient")}
                   required
                 />
               </div>
@@ -227,7 +231,7 @@ export default function RecipeForm() {
                 onClick={() => removeIngredient(ing.id)}
                 disabled={ingredients.length <= 1}
                 className="text-muted-foreground hover:text-destructive"
-                aria-label="Remove ingredient"
+                aria-label={tCommon("delete")}
               >
                 &times;
               </Button>
@@ -240,7 +244,7 @@ export default function RecipeForm() {
             onClick={addIngredient}
             className="mt-2"
           >
-            + Add Ingredient
+            + {t("addIngredient")}
           </Button>
         </CardContent>
       </Card>
@@ -248,7 +252,7 @@ export default function RecipeForm() {
       {/* Instructions */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Instructions</CardTitle>
+          <CardTitle className="text-lg">{t("instructions")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {instructions.map((ins, index) => (
@@ -258,7 +262,7 @@ export default function RecipeForm() {
               </span>
               <Textarea
                 name="instruction"
-                placeholder={`Step ${index + 1}...`}
+                placeholder={t("stepNumber", { number: index + 1 })}
                 rows={2}
                 required
                 className="flex-1"
@@ -270,7 +274,7 @@ export default function RecipeForm() {
                 onClick={() => removeInstruction(ins.id)}
                 disabled={instructions.length <= 1}
                 className="mt-1 text-muted-foreground hover:text-destructive"
-                aria-label="Remove step"
+                aria-label={tCommon("delete")}
               >
                 &times;
               </Button>
@@ -283,7 +287,7 @@ export default function RecipeForm() {
             onClick={addInstruction}
             className="mt-2"
           >
-            + Add Step
+            + {t("addInstruction")}
           </Button>
         </CardContent>
       </Card>
@@ -291,7 +295,7 @@ export default function RecipeForm() {
       {/* Submit */}
       <div className="flex justify-end gap-3">
         <Button type="submit" size="lg" disabled={isPending}>
-          {isPending ? "Saving..." : "Save Recipe"}
+          {isPending ? tCommon("loading") : tCommon("save")}
         </Button>
       </div>
     </form>

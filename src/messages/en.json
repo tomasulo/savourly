@@ -1,50 +1,81 @@
 {
+  "nav": {
+    "title": "Savourly",
+    "recipes": "Recipes",
+    "addRecipe": "Add Recipe"
+  },
   "common": {
-    "appName": "Savourly",
-    "search": "Search",
+    "search": "Search...",
+    "filter": "Filter",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
     "loading": "Loading...",
-    "error": "Something went wrong",
-    "saving": "Saving..."
+    "error": "An error occurred",
+    "noResults": "No results found"
   },
-  "nav": {
-    "home": "Home",
-    "recipes": "Recipes",
-    "addRecipe": "Add Recipe"
+  "home": {
+    "title": "Welcome to Savourly",
+    "subtitle": "Your personal recipe collection",
+    "getStarted": "Get Started",
+    "browseRecipes": "Browse Recipes",
+    "addFirstRecipe": "Add Your First Recipe"
   },
   "recipe": {
-    "title": "Title",
-    "description": "Description",
+    "title": "Recipe",
+    "recipes": "Recipes",
+    "newRecipe": "New Recipe",
+    "createRecipe": "Create Recipe",
+    "editRecipe": "Edit Recipe",
+    "recipeDetails": "Recipe Details",
     "ingredients": "Ingredients",
     "instructions": "Instructions",
+    "cookingLog": "Cooking History",
     "servings": "Servings",
+    "serving": "serving",
     "prepTime": "Prep Time",
     "cookTime": "Cook Time",
+    "totalTime": "Total Time",
     "difficulty": "Difficulty",
     "cuisine": "Cuisine",
-    "easy": "Easy",
-    "medium": "Medium",
-    "hard": "Hard",
-    "minutes": "min",
+    "description": "Description",
     "imageUrl": "Image URL",
-    "addNew": "Add New Recipe",
-    "basicInfo": "Basic Information",
-    "details": "Details",
-    "titlePlaceholder": "What are you cooking?",
-    "descriptionPlaceholder": "A brief description of the dish...",
-    "cuisinePlaceholder": "e.g., Italian",
-    "addIngredient": "+ Add Ingredient",
-    "addStep": "+ Add Step",
-    "saveRecipe": "Save Recipe",
+    "addIngredient": "Add Ingredient",
+    "addInstruction": "Add Instruction",
     "amount": "Amount",
     "unit": "Unit",
-    "ingredientPlaceholder": "Flour, sugar, etc.",
-    "stepPlaceholder": "Step {number}...",
-    "titleRequired": "Title is required.",
-    "ingredientRequired": "At least one ingredient is required.",
-    "instructionRequired": "At least one instruction step is required."
+    "ingredient": "Ingredient",
+    "step": "Step",
+    "stepNumber": "Step {number}",
+    "optional": "optional",
+    "notFound": "Recipe not found",
+    "notFoundDescription": "The recipe you're looking for doesn't exist."
+  },
+  "difficulty": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
+  "time": {
+    "minutes": "min",
+    "hours": "hrs",
+    "minute": "{count} minute",
+    "minute_plural": "{count} minutes",
+    "hour": "{count} hour",
+    "hour_plural": "{count} hours"
+  },
+  "empty": {
+    "noRecipes": "No recipes yet",
+    "noRecipesDescription": "Start building your collection by adding your first recipe.",
+    "noCookingLogs": "No cooking history yet",
+    "noCookingLogsDescription": "Cook this recipe and log your experience!"
+  },
+  "form": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "invalidUrl": "Invalid URL",
+    "minLength": "Minimum {min} characters",
+    "maxLength": "Maximum {max} characters"
   }
 }

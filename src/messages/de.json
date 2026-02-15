@@ -1,50 +1,81 @@
 {
+  "nav": {
+    "title": "Savourly",
+    "recipes": "Rezepte",
+    "addRecipe": "Rezept hinzufügen"
+  },
   "common": {
-    "appName": "Savourly",
-    "search": "Suche",
+    "search": "Suchen...",
+    "filter": "Filtern",
     "save": "Speichern",
     "cancel": "Abbrechen",
     "delete": "Löschen",
     "edit": "Bearbeiten",
-    "loading": "Laden...",
-    "error": "Etwas ist schiefgelaufen",
-    "saving": "Speichere..."
+    "loading": "Lädt...",
+    "error": "Ein Fehler ist aufgetreten",
+    "noResults": "Keine Ergebnisse gefunden"
   },
-  "nav": {
-    "home": "Startseite",
-    "recipes": "Rezepte",
-    "addRecipe": "Rezept hinzufügen"
+  "home": {
+    "title": "Willkommen bei Savourly",
+    "subtitle": "Deine persönliche Rezeptsammlung",
+    "getStarted": "Loslegen",
+    "browseRecipes": "Rezepte durchsuchen",
+    "addFirstRecipe": "Dein erstes Rezept hinzufügen"
   },
   "recipe": {
-    "title": "Titel",
-    "description": "Beschreibung",
+    "title": "Rezept",
+    "recipes": "Rezepte",
+    "newRecipe": "Neues Rezept",
+    "createRecipe": "Rezept erstellen",
+    "editRecipe": "Rezept bearbeiten",
+    "recipeDetails": "Rezeptdetails",
     "ingredients": "Zutaten",
-    "instructions": "Zubereitung",
+    "instructions": "Anleitung",
+    "cookingLog": "Kochhistorie",
     "servings": "Portionen",
+    "serving": "Portion",
     "prepTime": "Vorbereitungszeit",
     "cookTime": "Kochzeit",
+    "totalTime": "Gesamtzeit",
     "difficulty": "Schwierigkeit",
     "cuisine": "Küche",
-    "easy": "Einfach",
-    "medium": "Mittel",
-    "hard": "Schwer",
-    "minutes": "Min",
+    "description": "Beschreibung",
     "imageUrl": "Bild-URL",
-    "addNew": "Neues Rezept hinzufügen",
-    "basicInfo": "Grundinformationen",
-    "details": "Details",
-    "titlePlaceholder": "Was kochst du?",
-    "descriptionPlaceholder": "Eine kurze Beschreibung des Gerichts...",
-    "cuisinePlaceholder": "z.B. Italienisch",
-    "addIngredient": "+ Zutat hinzufügen",
-    "addStep": "+ Schritt hinzufügen",
-    "saveRecipe": "Rezept speichern",
+    "addIngredient": "Zutat hinzufügen",
+    "addInstruction": "Schritt hinzufügen",
     "amount": "Menge",
     "unit": "Einheit",
-    "ingredientPlaceholder": "Mehl, Zucker, etc.",
-    "stepPlaceholder": "Schritt {number}...",
-    "titleRequired": "Titel ist erforderlich.",
-    "ingredientRequired": "Mindestens eine Zutat ist erforderlich.",
-    "instructionRequired": "Mindestens ein Zubereitungsschritt ist erforderlich."
+    "ingredient": "Zutat",
+    "step": "Schritt",
+    "stepNumber": "Schritt {number}",
+    "optional": "optional",
+    "notFound": "Rezept nicht gefunden",
+    "notFoundDescription": "Das gesuchte Rezept existiert nicht."
+  },
+  "difficulty": {
+    "easy": "Einfach",
+    "medium": "Mittel",
+    "hard": "Schwer"
+  },
+  "time": {
+    "minutes": "Min",
+    "hours": "Std",
+    "minute": "{count} Minute",
+    "minute_plural": "{count} Minuten",
+    "hour": "{count} Stunde",
+    "hour_plural": "{count} Stunden"
+  },
+  "empty": {
+    "noRecipes": "Noch keine Rezepte",
+    "noRecipesDescription": "Beginne deine Sammlung, indem du dein erstes Rezept hinzufügst.",
+    "noCookingLogs": "Noch keine Kochhistorie",
+    "noCookingLogsDescription": "Koche dieses Rezept und dokumentiere deine Erfahrung!"
+  },
+  "form": {
+    "required": "Dieses Feld ist erforderlich",
+    "invalidEmail": "Ungültige E-Mail-Adresse",
+    "invalidUrl": "Ungültige URL",
+    "minLength": "Mindestens {min} Zeichen",
+    "maxLength": "Maximal {max} Zeichen"
   }
 }

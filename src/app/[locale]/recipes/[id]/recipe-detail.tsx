@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,9 @@ interface RecipeDetailProps {
 }
 
 export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
+  const t = useTranslations("recipe");
+  const tDiff = useTranslations("difficulty");
+  const tTime = useTranslations("time");
   const [servings, setServings] = useState(recipe.servings);
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(
     new Set()
@@ -67,7 +71,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
           <div className="flex h-full w-full items-center justify-center">
             <div className="text-center">
               <div className="text-6xl mb-4">🍳</div>
-              <p className="text-muted-foreground">No image available</p>
+              <p className="text-muted-foreground">{t("notFound")}</p>
             </div>
           </div>
         )}
@@ -95,10 +99,10 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
                   <span className="text-2xl">⏱️</span>
                   <div>
                     <div className="text-sm text-muted-foreground">
-                      Prep Time
+                      {t("prepTime")}
                     </div>
                     <div className="font-semibold">
-                      {recipe.prep_time_minutes} min
+                      {recipe.prep_time_minutes} {tTime("minutes")}
                     </div>
                   </div>
                 </div>
@@ -108,10 +112,10 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
                   <span className="text-2xl">🔥</span>
                   <div>
                     <div className="text-sm text-muted-foreground">
-                      Cook Time
+                      {t("cookTime")}
                     </div>
                     <div className="font-semibold">
-                      {recipe.cook_time_minutes} min
+                      {recipe.cook_time_minutes} {tTime("minutes")}
                     </div>
                   </div>
                 </div>
@@ -121,16 +125,16 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
                   <span className="text-2xl">⏰</span>
                   <div>
                     <div className="text-sm text-muted-foreground">
-                      Total Time
+                      {t("totalTime")}
                     </div>
-                    <div className="font-semibold">{totalTime} min</div>
+                    <div className="font-semibold">{totalTime} {tTime("minutes")}</div>
                   </div>
                 </div>
               )}
               <div className="flex items-center gap-2">
                 <span className="text-2xl">👥</span>
                 <div>
-                  <div className="text-sm text-muted-foreground">Servings</div>
+                  <div className="text-sm text-muted-foreground">{t("servings")}</div>
                   <div className="font-semibold">{recipe.servings}</div>
                 </div>
               </div>
@@ -138,14 +142,13 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
                 <span className="text-2xl">📊</span>
                 <div>
                   <div className="text-sm text-muted-foreground">
-                    Difficulty
+                    {t("difficulty")}
                   </div>
                   <Badge
                     className={difficultyColors[recipe.difficulty]}
                     variant="secondary"
                   >
-                    {recipe.difficulty.charAt(0).toUpperCase() +
-                      recipe.difficulty.slice(1)}
+                    {tDiff(recipe.difficulty)}
                   </Badge>
                 </div>
               </div>
@@ -153,7 +156,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">🌍</span>
                   <div>
-                    <div className="text-sm text-muted-foreground">Cuisine</div>
+                    <div className="text-sm text-muted-foreground">{t("cuisine")}</div>
                     <div className="font-semibold">{recipe.cuisine}</div>
                   </div>
                 </div>
@@ -166,7 +169,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
         <Card className="mb-8">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-2xl">Ingredients</CardTitle>
+              <CardTitle className="text-2xl">{t("ingredients")}</CardTitle>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -177,7 +180,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
                   −
                 </Button>
                 <span className="min-w-[60px] text-center font-semibold">
-                  {servings} serving{servings !== 1 ? "s" : ""}
+                  {servings} {servings !== 1 ? t("servings") : t("serving")}
                 </span>
                 <Button
                   variant="outline"
@@ -223,7 +226,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
         {/* Instructions Section */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-2xl">Instructions</CardTitle>
+            <CardTitle className="text-2xl">{t("instructions")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ol className="space-y-6">
@@ -248,7 +251,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
         {cookingLogs.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Cooking History</CardTitle>
+              <CardTitle className="text-2xl">{t("cookingLog")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
