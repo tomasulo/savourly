@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,10 +63,13 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
       {/* Hero Image Section */}
       <div className="relative h-[300px] w-full overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
         {recipe.image_url ? (
-          <img
+          <Image
             src={recipe.image_url}
             alt={recipe.title}
-            className="h-full w-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">

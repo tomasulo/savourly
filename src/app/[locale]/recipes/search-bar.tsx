@@ -24,7 +24,7 @@ export function SearchBar() {
       }
 
       router.replace(`${pathname}?${params.toString()}`);
-    }, 300); // Debounce search
+    }, 150); // Debounce search (reduced from 300ms for snappier feel)
 
     return () => clearTimeout(timeoutId);
   }, [query, pathname, router, searchParams]);
