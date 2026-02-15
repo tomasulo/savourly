@@ -1,4 +1,4 @@
-import type Database from "better-sqlite3";
+import type { Client } from "@libsql/client";
 
 interface SeedRecipe {
   title: string;
@@ -194,33 +194,23 @@ const recipes: SeedRecipe[] = [
   },
 ];
 
-export function seedDatabase(db: Database.Database): void {
-  const recipeCount = db
-    .prepare("SELECT COUNT(*) as count FROM recipes")
-    .get() as { count: number };
+export async function seedDatabase(db: Client): Promise<void> {
+  const result = await db.execute("SELECT COUNT(*) as count FROM recipes");
+  const recipeCount = result.rows[0][0] as number;
 
-  if (recipeCount.count > 0) {
+  if (recipeCount > 0) {
     return;
   }
 
-  const insertRecipe = db.prepare(`
-    INSERT INTO recipes (title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+  // Prepare all statements for batch execution
+  const statements = [];
 
-  const insertIngredient = db.prepare(`
-    INSERT INTO ingredients (recipe_id, name, amount, unit, order_index)
-    VALUES (?, ?, ?, ?, ?)
-  `);
-
-  const insertInstruction = db.prepare(`
-    INSERT INTO instructions (recipe_id, step_number, content)
-    VALUES (?, ?, ?)
-  `);
-
-  const seedAll = db.transaction(() => {
-    for (const recipe of recipes) {
-      const result = insertRecipe.run(
+  for (const recipe of recipes) {
+    // Insert recipe
+    statements.push({
+      sql: `INSERT INTO recipes (title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [
         recipe.title,
         recipe.description,
         recipe.cuisine,
@@ -228,19 +218,52 @@ export function seedDatabase(db: Database.Database): void {
         recipe.prep_time_minutes,
         recipe.cook_time_minutes,
         recipe.servings,
-        recipe.image_url
-      );
-      const recipeId = result.lastInsertRowid;
+        recipe.image_url,
+      ],
+    });
 
-      recipe.ingredients.forEach((ing, index) => {
-        insertIngredient.run(recipeId, ing.name, ing.amount, ing.unit, index);
-      });
+    // Get the recipe ID (we'll need to handle this differently)
+    // For now, we'll use a workaround: insert recipe first, then get last insert id
+  }
 
-      recipe.instructions.forEach((content, index) => {
-        insertInstruction.run(recipeId, index + 1, content);
-      });
+  // Since batch doesn't return lastInsertRowid, we need to insert recipes one by one
+  for (const recipe of recipes) {
+    const result = await db.execute({
+      sql: `INSERT INTO recipes (title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [
+        recipe.title,
+        recipe.description,
+        recipe.cuisine,
+        recipe.difficulty,
+        recipe.prep_time_minutes,
+        recipe.cook_time_minutes,
+        recipe.servings,
+        recipe.image_url,
+      ],
+    });
+    const recipeId = result.lastInsertRowid;
+
+    // Batch insert ingredients
+    const ingredientStatements = recipe.ingredients.map((ing, index) => ({
+      sql: `INSERT INTO ingredients (recipe_id, name, amount, unit, order_index)
+            VALUES (?, ?, ?, ?, ?)`,
+      args: [recipeId as number | bigint, ing.name, ing.amount, ing.unit, index] as (string | number | bigint)[],
+    }));
+
+    if (ingredientStatements.length > 0) {
+      await db.batch(ingredientStatements, "write");
     }
-  });
 
-  seedAll();
+    // Batch insert instructions
+    const instructionStatements = recipe.instructions.map((content, index) => ({
+      sql: `INSERT INTO instructions (recipe_id, step_number, content)
+            VALUES (?, ?, ?)`,
+      args: [recipeId as number | bigint, index + 1, content] as (string | number | bigint)[],
+    }));
+
+    if (instructionStatements.length > 0) {
+      await db.batch(instructionStatements, "write");
+    }
+  }
 }

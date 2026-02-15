@@ -11,7 +11,8 @@ export default async function LandingPage() {
   const tNav = await getTranslations("nav");
 
   // Get 4 most recent recipes for preview
-  const recentRecipes = getRecipes().slice(0, 4);
+  const allRecipes = await getRecipes();
+  const recentRecipes = allRecipes.slice(0, 4);
 
   return (
     <div className="min-h-screen">

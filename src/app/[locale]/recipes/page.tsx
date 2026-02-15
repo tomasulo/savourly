@@ -31,8 +31,8 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
     difficulty: params.difficulty,
   };
 
-  const recipes = getRecipes(filters);
-  const allCuisines = getAllCuisines();
+  const recipes = await getRecipes(filters);
+  const allCuisines = await getAllCuisines();
 
   return (
     <div className="min-h-screen bg-background">

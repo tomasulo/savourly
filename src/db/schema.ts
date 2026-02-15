@@ -1,7 +1,7 @@
-import type Database from "better-sqlite3";
+import type { Client } from "@libsql/client";
 
-export function initializeSchema(db: Database.Database): void {
-  db.exec(`
+export async function initializeSchema(db: Client): Promise<void> {
+  await db.executeMultiple(`
     CREATE TABLE IF NOT EXISTS recipes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL DEFAULT 1,
