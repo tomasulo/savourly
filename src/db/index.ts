@@ -1,19 +1,17 @@
-import Database from "better-sqlite3";
-import path from "node:path";
+import { createClient, type Client } from "@libsql/client";
 import { initializeSchema } from "./schema";
 import { seedDatabase } from "./seed";
 
-const DB_PATH = path.join(process.cwd(), "savourly.db");
+let _db: Client | null = null;
 
-let _db: Database.Database | null = null;
-
-export function getDb(): Database.Database {
+export async function getDb(): Promise<Client> {
   if (!_db) {
-    _db = new Database(DB_PATH);
-    _db.pragma("journal_mode = WAL");
-    _db.pragma("foreign_keys = ON");
-    initializeSchema(_db);
-    seedDatabase(_db);
+    _db = createClient({
+      url: process.env.TURSO_DATABASE_URL || "file:savourly.db",
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+    await initializeSchema(_db);
+    await seedDatabase(_db);
   }
   return _db;
 }

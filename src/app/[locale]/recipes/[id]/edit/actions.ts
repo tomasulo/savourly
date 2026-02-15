@@ -51,43 +51,25 @@ export async function updateRecipe(
     return { error: "At least one instruction step is required." };
   }
 
-  const db = getDb();
+  const db = await getDb();
 
-  const updateRecipeStmt = db.prepare(`
-    UPDATE recipes
-    SET title = ?,
-        description = ?,
-        cuisine = ?,
-        difficulty = ?,
-        prep_time_minutes = ?,
-        cook_time_minutes = ?,
-        servings = ?,
-        image_url = ?,
-        updated_at = datetime('now')
-    WHERE id = ?
-  `);
+  // Prepare all statements for batch execution
+  const statements: { sql: string; args: (string | number | null)[] }[] = [];
 
-  const deleteIngredients = db.prepare(
-    `DELETE FROM ingredients WHERE recipe_id = ?`
-  );
-
-  const deleteInstructions = db.prepare(
-    `DELETE FROM instructions WHERE recipe_id = ?`
-  );
-
-  const insertIngredient = db.prepare(`
-    INSERT INTO ingredients (recipe_id, name, amount, unit, order_index)
-    VALUES (?, ?, ?, ?, ?)
-  `);
-
-  const insertInstruction = db.prepare(`
-    INSERT INTO instructions (recipe_id, step_number, content)
-    VALUES (?, ?, ?)
-  `);
-
-  const updateAll = db.transaction(() => {
-    // Update recipe
-    updateRecipeStmt.run(
+  // Update recipe
+  statements.push({
+    sql: `UPDATE recipes
+          SET title = ?,
+              description = ?,
+              cuisine = ?,
+              difficulty = ?,
+              prep_time_minutes = ?,
+              cook_time_minutes = ?,
+              servings = ?,
+              image_url = ?,
+              updated_at = datetime('now')
+          WHERE id = ?`,
+    args: [
       title.trim(),
       description?.trim() || null,
       cuisine?.trim() || null,
@@ -96,41 +78,71 @@ export async function updateRecipe(
       cookTime ? parseInt(cookTime, 10) : null,
       servings ? parseInt(servings, 10) : 4,
       imageUrl?.trim() || null,
-      recipeId
-    );
-
-    // Delete existing ingredients and instructions
-    deleteIngredients.run(recipeId);
-    deleteInstructions.run(recipeId);
-
-    // Insert new ingredients
-    ingredientNames.forEach((name, index) => {
-      if (name.trim().length === 0) return;
-      const amount = ingredientAmounts[index]
-        ? parseFloat(ingredientAmounts[index])
-        : null;
-      const unit = ingredientUnits[index]?.trim() || null;
-      insertIngredient.run(recipeId, name.trim(), amount, unit, index);
-    });
-
-    // Insert new instructions
-    instructionContents.forEach((content, index) => {
-      if (content.trim().length === 0) return;
-      insertInstruction.run(recipeId, index + 1, content.trim());
-    });
+      recipeId,
+    ],
   });
 
-  updateAll();
+  // Delete existing ingredients and instructions
+  statements.push({
+    sql: "DELETE FROM ingredients WHERE recipe_id = ?",
+    args: [recipeId],
+  });
+
+  statements.push({
+    sql: "DELETE FROM instructions WHERE recipe_id = ?",
+    args: [recipeId],
+  });
+
+  // Execute update and delete statements
+  await db.batch(statements, "write");
+
+  // Insert new ingredients
+  const ingredientStatements: { sql: string; args: (string | number | null)[] }[] = [];
+  for (let index = 0; index < ingredientNames.length; index++) {
+    const name = ingredientNames[index];
+    if (name.trim().length === 0) continue;
+    const amount = ingredientAmounts[index]
+      ? parseFloat(ingredientAmounts[index])
+      : null;
+    const unit = ingredientUnits[index]?.trim() || null;
+    ingredientStatements.push({
+      sql: `INSERT INTO ingredients (recipe_id, name, amount, unit, order_index)
+            VALUES (?, ?, ?, ?, ?)`,
+      args: [recipeId, name.trim(), amount, unit, index],
+    });
+  }
+
+  // Insert new instructions
+  const instructionStatements: { sql: string; args: (string | number)[] }[] = [];
+  let stepNumber = 1;
+  for (const content of instructionContents) {
+    if (content.trim().length === 0) continue;
+    instructionStatements.push({
+      sql: `INSERT INTO instructions (recipe_id, step_number, content)
+            VALUES (?, ?, ?)`,
+      args: [recipeId, stepNumber, content.trim()],
+    });
+    stepNumber++;
+  }
+
+  // Execute inserts in batch
+  if (ingredientStatements.length > 0) {
+    await db.batch(ingredientStatements, "write");
+  }
+  if (instructionStatements.length > 0) {
+    await db.batch(instructionStatements, "write");
+  }
 
   redirect(`/recipes/${recipeId}`);
 }
 
 export async function deleteRecipe(recipeId: number): Promise<void> {
-  const db = getDb();
+  const db = await getDb();
 
-  const deleteStmt = db.prepare(`DELETE FROM recipes WHERE id = ?`);
-
-  deleteStmt.run(recipeId);
+  await db.execute({
+    sql: "DELETE FROM recipes WHERE id = ?",
+    args: [recipeId],
+  });
 
   redirect("/recipes");
 }

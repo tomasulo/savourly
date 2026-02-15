@@ -18,7 +18,7 @@ export default async function EditRecipePage({ params }: EditRecipePageProps) {
     notFound();
   }
 
-  const recipe = getRecipeWithDetails(recipeId);
+  const recipe = await getRecipeWithDetails(recipeId);
 
   if (!recipe) {
     notFound();

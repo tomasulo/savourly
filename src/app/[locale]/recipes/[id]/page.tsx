@@ -14,13 +14,13 @@ export default async function RecipeDetailPage({
   }
 
   const recipeId = Number(id);
-  const recipe = getRecipeWithDetails(recipeId);
+  const recipe = await getRecipeWithDetails(recipeId);
 
   if (!recipe) {
     notFound();
   }
 
-  const cookingLogs = getCookingLogs(recipeId);
+  const cookingLogs = await getCookingLogs(recipeId);
 
   return <RecipeDetail recipe={recipe} cookingLogs={cookingLogs} />;
 }

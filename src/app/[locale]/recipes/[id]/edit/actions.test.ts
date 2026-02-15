@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { updateRecipe, deleteRecipe } from './actions'
 import { getDb } from '@/db/index'
-import type Database from 'better-sqlite3'
+import type { Client } from '@libsql/client'
 
 // Mock the database module
 vi.mock('@/db/index', () => ({
@@ -17,24 +17,17 @@ vi.mock('next/navigation', () => ({
 
 describe('Recipe Edit Actions', () => {
   let mockDb: {
-    prepare: ReturnType<typeof vi.fn>
-    transaction: ReturnType<typeof vi.fn>
+    execute: ReturnType<typeof vi.fn>
+    batch: ReturnType<typeof vi.fn>
   }
-  let mockPrepare: ReturnType<typeof vi.fn>
-  let mockRun: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    mockRun = vi.fn()
-    mockPrepare = vi.fn(() => ({
-      run: mockRun,
-    }))
-
     mockDb = {
-      prepare: mockPrepare,
-      transaction: vi.fn((fn) => fn),
+      execute: vi.fn().mockResolvedValue({ rows: [], columns: [] }),
+      batch: vi.fn().mockResolvedValue([]),
     }
 
-    vi.mocked(getDb).mockReturnValue(mockDb as unknown as Database.Database)
+    vi.mocked(getDb).mockResolvedValue(mockDb as unknown as Client)
   })
 
   afterEach(() => {
@@ -64,26 +57,18 @@ describe('Recipe Edit Actions', () => {
         expect((error as Error).message).toBe('REDIRECT:/recipes/1')
       }
 
-      // Verify update statement was prepared
-      expect(mockPrepare).toHaveBeenCalledWith(
-        expect.stringContaining('UPDATE recipes')
-      )
+      // Verify batch was called with update and delete statements
+      expect(mockDb.batch).toHaveBeenCalled()
+      const batchCalls = mockDb.batch.mock.calls[0][0]
 
-      // Verify delete statements were prepared
-      expect(mockPrepare).toHaveBeenCalledWith(
-        expect.stringContaining('DELETE FROM ingredients')
-      )
-      expect(mockPrepare).toHaveBeenCalledWith(
-        expect.stringContaining('DELETE FROM instructions')
-      )
+      // Check that batch includes UPDATE, DELETE ingredients, DELETE instructions
+      expect(batchCalls).toHaveLength(3)
+      expect(batchCalls[0].sql).toContain('UPDATE recipes')
+      expect(batchCalls[1].sql).toContain('DELETE FROM ingredients')
+      expect(batchCalls[2].sql).toContain('DELETE FROM instructions')
 
-      // Verify insert statements were prepared
-      expect(mockPrepare).toHaveBeenCalledWith(
-        expect.stringContaining('INSERT INTO ingredients')
-      )
-      expect(mockPrepare).toHaveBeenCalledWith(
-        expect.stringContaining('INSERT INTO instructions')
-      )
+      // Verify second batch call for inserts
+      expect(mockDb.batch).toHaveBeenCalledTimes(3) // update/delete batch + ingredients batch + instructions batch
     })
 
     it('should return error when title is missing', async () => {
@@ -95,7 +80,7 @@ describe('Recipe Edit Actions', () => {
       const result = await updateRecipe(1, {}, formData)
 
       expect(result.error).toBe('Title is required.')
-      expect(mockPrepare).not.toHaveBeenCalled()
+      expect(mockDb.batch).not.toHaveBeenCalled()
     })
 
     it('should return error when difficulty is invalid', async () => {
@@ -108,7 +93,7 @@ describe('Recipe Edit Actions', () => {
       const result = await updateRecipe(1, {}, formData)
 
       expect(result.error).toBe('Invalid difficulty level.')
-      expect(mockPrepare).not.toHaveBeenCalled()
+      expect(mockDb.batch).not.toHaveBeenCalled()
     })
 
     it('should return error when no ingredients provided', async () => {
@@ -120,7 +105,7 @@ describe('Recipe Edit Actions', () => {
       const result = await updateRecipe(1, {}, formData)
 
       expect(result.error).toBe('At least one ingredient is required.')
-      expect(mockPrepare).not.toHaveBeenCalled()
+      expect(mockDb.batch).not.toHaveBeenCalled()
     })
 
     it('should return error when no instructions provided', async () => {
@@ -132,7 +117,7 @@ describe('Recipe Edit Actions', () => {
       const result = await updateRecipe(1, {}, formData)
 
       expect(result.error).toBe('At least one instruction step is required.')
-      expect(mockPrepare).not.toHaveBeenCalled()
+      expect(mockDb.batch).not.toHaveBeenCalled()
     })
 
     it('should handle multiple ingredients and instructions', async () => {
@@ -153,7 +138,7 @@ describe('Recipe Edit Actions', () => {
         expect((error as Error).message).toBe('REDIRECT:/recipes/1')
       }
 
-      expect(mockPrepare).toHaveBeenCalled()
+      expect(mockDb.batch).toHaveBeenCalled()
     })
 
     it('should handle optional fields as null', async () => {
@@ -168,7 +153,7 @@ describe('Recipe Edit Actions', () => {
         expect((error as Error).message).toBe('REDIRECT:/recipes/1')
       }
 
-      expect(mockPrepare).toHaveBeenCalled()
+      expect(mockDb.batch).toHaveBeenCalled()
     })
   })
 
@@ -180,10 +165,10 @@ describe('Recipe Edit Actions', () => {
         expect((error as Error).message).toBe('REDIRECT:/recipes')
       }
 
-      expect(mockPrepare).toHaveBeenCalledWith(
-        expect.stringContaining('DELETE FROM recipes WHERE id = ?')
-      )
-      expect(mockRun).toHaveBeenCalledWith(1)
+      expect(mockDb.execute).toHaveBeenCalledWith({
+        sql: expect.stringContaining('DELETE FROM recipes WHERE id = ?'),
+        args: [1],
+      })
     })
 
     it('should handle different recipe IDs', async () => {
@@ -193,7 +178,10 @@ describe('Recipe Edit Actions', () => {
         expect((error as Error).message).toBe('REDIRECT:/recipes')
       }
 
-      expect(mockRun).toHaveBeenCalledWith(42)
+      expect(mockDb.execute).toHaveBeenCalledWith({
+        sql: expect.stringContaining('DELETE FROM recipes WHERE id = ?'),
+        args: [42],
+      })
     })
   })
 })
