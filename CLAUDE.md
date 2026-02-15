@@ -18,10 +18,15 @@ This repo is **100% AI-developed** — all coding is done by AI agents. Optimize
 
 ## Commands
 ```bash
-npm run dev       # Start dev server on http://localhost:3000
-npm run build     # Production build — MUST pass before opening a PR
-npm run lint      # ESLint check
-npm run start     # Start production server
+npm run dev           # Start dev server on http://localhost:3000
+npm run build         # Production build — MUST pass before opening a PR
+npm run lint          # ESLint check
+npm run start         # Start production server
+npm run test          # Run unit tests (watch mode)
+npm run test:ui       # Run unit tests with UI
+npm run test:coverage # Run unit tests with coverage report
+npm run test:e2e      # Run E2E tests with Playwright
+npm run test:e2e:ui   # Run E2E tests with Playwright UI
 ```
 
 ## Design System
@@ -74,11 +79,16 @@ savourly/
 │   ├── lib/              # Utilities & shared types
 │   │   ├── utils.ts      # cn() utility from shadcn
 │   │   └── types.ts      # Recipe, Ingredient, Instruction, CookingLog, RecipeWithDetails
-│   └── messages/         # i18n JSON files
-│       ├── en.json       # English
-│       └── de.json       # German
+│   ├── messages/         # i18n JSON files
+│   │   ├── en.json       # English
+│   │   └── de.json       # German
+│   └── test/             # Test files
+│       ├── setup.ts      # Vitest setup (jest-dom, cleanup)
+│       └── e2e/          # Playwright E2E tests
 ├── CLAUDE.md             # This file — agent conventions
 ├── README.md             # Project overview
+├── vitest.config.ts      # Vitest configuration
+├── playwright.config.ts  # Playwright configuration
 ├── .claude/
 │   └── settings.json     # Permissions for AI agents (git, gh, npm, npx allowed)
 └── .github/
@@ -103,6 +113,69 @@ savourly/
 - Keep components focused — one component per file
 - Prefer composition over complex prop APIs
 - All user-facing strings must use next-intl translations (never hardcode text)
+
+## Testing Requirements
+
+**CRITICAL: All new code MUST include automated tests.**
+
+### Test Stack
+- **Unit/Component Tests:** Vitest + React Testing Library + @testing-library/jest-dom
+- **E2E Tests:** Playwright
+- **Coverage:** v8 provider with text/json/html reporters
+
+### When to Write Tests
+Write tests for **every new feature or component**:
+1. **Unit tests** for components — rendering, user interactions, edge cases
+2. **Unit tests** for utilities — all code paths and error handling
+3. **E2E tests** for user flows — happy paths and critical journeys
+
+### Test File Conventions
+- **Component tests:** Colocate with components (e.g., `recipe-card.test.tsx` next to `recipe-card.tsx`)
+- **E2E tests:** Place in `src/test/e2e/` (e.g., `recipe-creation.spec.ts`)
+- **Test naming:** Use `*.test.tsx` for unit tests, `*.spec.ts` for E2E tests
+- **Vitest excludes:** E2E tests are excluded from Vitest (they run via Playwright)
+
+### Test Structure
+```typescript
+// Unit test example
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { MyComponent } from './my-component'
+
+// Mock next-intl, next/image, i18n routing as needed
+vi.mock('next-intl', () => ({ ... }))
+
+describe('MyComponent', () => {
+  it('renders correctly', () => {
+    render(<MyComponent />)
+    expect(screen.getByText('...')).toBeInTheDocument()
+  })
+})
+```
+
+```typescript
+// E2E test example
+import { test, expect } from '@playwright/test'
+
+test.describe('Feature Flow', () => {
+  test('should complete user journey', async ({ page }) => {
+    await page.goto('/en/feature')
+    // ... test steps
+  })
+})
+```
+
+### Running Tests
+- Run `npm run test` before committing to ensure all unit tests pass
+- Run `npm run build` before opening PR (includes TypeScript check)
+- E2E tests are optional during development but recommended for critical flows
+- QA agent will verify all tests pass during PR review
+
+### Test Coverage Goals
+- Aim for meaningful coverage, not 100% coverage
+- Focus on testing behavior and user-facing functionality
+- Test edge cases: null/undefined values, empty states, error conditions
+- Skip trivial getters/setters
 
 ## Database
 - SQLite via better-sqlite3
