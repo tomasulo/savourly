@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
   const t = useTranslations("recipe");
   const tDiff = useTranslations("difficulty");
   const tTime = useTranslations("time");
+  const tCommon = useTranslations("common");
   const [servings, setServings] = useState(recipe.servings);
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(
     new Set()
@@ -94,6 +96,15 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
 
       {/* Main Content */}
       <div className="mx-auto max-w-4xl px-4 py-8">
+        {/* Edit Button */}
+        <div className="mb-6 flex justify-end">
+          <Button asChild>
+            <Link href={`/recipes/${recipe.id}/edit`}>
+              {tCommon("edit")}
+            </Link>
+          </Button>
+        </div>
+
         {/* Quick Facts Bar */}
         <Card className="mb-8">
           <CardContent className="p-6">
