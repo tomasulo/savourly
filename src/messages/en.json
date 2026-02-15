@@ -21,7 +21,19 @@
     "subtitle": "Your personal recipe collection",
     "getStarted": "Get Started",
     "browseRecipes": "Browse Recipes",
-    "addFirstRecipe": "Add Your First Recipe"
+    "addFirstRecipe": "Add Your First Recipe",
+    "whySavourly": "Why Savourly?",
+    "organizeTitle": "Organize",
+    "organizeDescription": "Keep all your recipes in one beautiful place. Never lose that family recipe again.",
+    "discoverTitle": "Discover",
+    "discoverDescription": "Search by cuisine, difficulty, time, and more. Find the perfect recipe instantly.",
+    "cookTitle": "Cook",
+    "cookDescription": "Step-by-step guides with adjustable servings. Cook with confidence.",
+    "popularRecipes": "Popular Recipes",
+    "getInspired": "Get inspired by delicious recipes",
+    "exploreAllRecipes": "Explore All Recipes →",
+    "readyToStartCooking": "Ready to start cooking?",
+    "joinSavourly": "Join Savourly and organize your recipes beautifully"
   },
   "recipe": {
     "title": "Recipe",

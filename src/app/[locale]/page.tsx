@@ -71,7 +71,7 @@ export default async function LandingPage() {
       <section className="py-24 px-6 bg-muted/30">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
-            Why Savourly?
+            {t("whySavourly")}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -80,9 +80,9 @@ export default async function LandingPage() {
               <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-200">
                 📚
               </div>
-              <h3 className="text-2xl font-semibold">Organize</h3>
+              <h3 className="text-2xl font-semibold">{t("organizeTitle")}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Keep all your recipes in one beautiful place. Never lose that family recipe again.
+                {t("organizeDescription")}
               </p>
             </div>
 
@@ -91,9 +91,9 @@ export default async function LandingPage() {
               <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-200">
                 🔍
               </div>
-              <h3 className="text-2xl font-semibold">Discover</h3>
+              <h3 className="text-2xl font-semibold">{t("discoverTitle")}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Search by cuisine, difficulty, time, and more. Find the perfect recipe instantly.
+                {t("discoverDescription")}
               </p>
             </div>
 
@@ -102,9 +102,9 @@ export default async function LandingPage() {
               <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-200">
                 👨‍🍳
               </div>
-              <h3 className="text-2xl font-semibold">Cook</h3>
+              <h3 className="text-2xl font-semibold">{t("cookTitle")}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Step-by-step guides with adjustable servings. Cook with confidence.
+                {t("cookDescription")}
               </p>
             </div>
           </div>
@@ -117,10 +117,10 @@ export default async function LandingPage() {
           <div className="mx-auto max-w-7xl">
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Popular Recipes
+                {t("popularRecipes")}
               </h2>
               <p className="text-xl text-muted-foreground">
-                Get inspired by delicious recipes
+                {t("getInspired")}
               </p>
             </div>
 
@@ -133,7 +133,7 @@ export default async function LandingPage() {
             <div className="text-center">
               <Link href="/recipes">
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-                  Explore All Recipes →
+                  {t("exploreAllRecipes")}
                 </Button>
               </Link>
             </div>
@@ -145,11 +145,11 @@ export default async function LandingPage() {
       <section className="py-24 px-6 bg-primary/5">
         <div className="mx-auto max-w-3xl text-center space-y-8">
           <h2 className="text-4xl md:text-5xl font-bold">
-            Ready to start cooking?
+            {t("readyToStartCooking")}
           </h2>
 
           <p className="text-xl text-muted-foreground">
-            Join Savourly and organize your recipes beautifully
+            {t("joinSavourly")}
           </p>
 
           <Link href="/recipes/new">
