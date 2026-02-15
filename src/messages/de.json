@@ -90,5 +90,15 @@
     "invalidUrl": "Ungültige URL",
     "minLength": "Mindestens {min} Zeichen",
     "maxLength": "Maximal {max} Zeichen"
+  },
+  "error": {
+    "somethingWentWrong": "Etwas ist schief gelaufen",
+    "errorDescription": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut oder kehre zur Startseite zurück.",
+    "tryAgain": "Erneut versuchen",
+    "goHome": "Zur Startseite",
+    "errorId": "Fehler-ID",
+    "recipeErrorTitle": "Rezeptfehler",
+    "recipeErrorDescription": "Dieses Rezept konnte nicht geladen werden. Bitte versuche es erneut oder stöbere in anderen Rezepten.",
+    "backToRecipes": "Zurück zu Rezepten"
   }
 }

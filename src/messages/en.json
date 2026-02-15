@@ -90,5 +90,15 @@
     "invalidUrl": "Invalid URL",
     "minLength": "Minimum {min} characters",
     "maxLength": "Maximum {max} characters"
+  },
+  "error": {
+    "somethingWentWrong": "Something went wrong",
+    "errorDescription": "We encountered an unexpected error. Please try again or return home.",
+    "tryAgain": "Try again",
+    "goHome": "Go home",
+    "errorId": "Error ID",
+    "recipeErrorTitle": "Recipe error",
+    "recipeErrorDescription": "We couldn't load this recipe. Please try again or browse other recipes.",
+    "backToRecipes": "Back to recipes"
   }
 }
