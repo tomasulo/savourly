@@ -8,6 +8,7 @@ interface SeedRecipe {
   prep_time_minutes: number;
   cook_time_minutes: number;
   servings: number;
+  image_url: string;
   ingredients: { name: string; amount: number; unit: string }[];
   instructions: string[];
 }
@@ -22,6 +23,7 @@ const recipes: SeedRecipe[] = [
     prep_time_minutes: 10,
     cook_time_minutes: 20,
     servings: 4,
+    image_url: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&auto=format&fit=crop",
     ingredients: [
       { name: "Spaghetti", amount: 400, unit: "g" },
       { name: "Pancetta", amount: 200, unit: "g" },
@@ -49,6 +51,7 @@ const recipes: SeedRecipe[] = [
     prep_time_minutes: 15,
     cook_time_minutes: 25,
     servings: 4,
+    image_url: "https://images.unsplash.com/photo-1606787619248-5d56d7b87f24?w=800&auto=format&fit=crop",
     ingredients: [
       { name: "Chicken thighs", amount: 600, unit: "g" },
       { name: "Soy sauce", amount: 4, unit: "tbsp" },
@@ -77,6 +80,7 @@ const recipes: SeedRecipe[] = [
     prep_time_minutes: 30,
     cook_time_minutes: 45,
     servings: 6,
+    image_url: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&auto=format&fit=crop",
     ingredients: [
       { name: "Pork shoulder", amount: 800, unit: "g" },
       { name: "Dried guajillo chiles", amount: 4, unit: "whole" },
@@ -106,6 +110,7 @@ const recipes: SeedRecipe[] = [
     prep_time_minutes: 20,
     cook_time_minutes: 30,
     servings: 4,
+    image_url: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=800&auto=format&fit=crop",
     ingredients: [
       { name: "Spinach", amount: 500, unit: "g" },
       { name: "Paneer", amount: 250, unit: "g" },
@@ -136,6 +141,7 @@ const recipes: SeedRecipe[] = [
     prep_time_minutes: 15,
     cook_time_minutes: 0,
     servings: 4,
+    image_url: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&auto=format&fit=crop",
     ingredients: [
       { name: "Tomatoes", amount: 4, unit: "whole" },
       { name: "Cucumber", amount: 1, unit: "whole" },
@@ -163,6 +169,7 @@ const recipes: SeedRecipe[] = [
     prep_time_minutes: 20,
     cook_time_minutes: 15,
     servings: 4,
+    image_url: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=800&auto=format&fit=crop",
     ingredients: [
       { name: "Rice noodles", amount: 250, unit: "g" },
       { name: "Shrimp", amount: 200, unit: "g" },
@@ -197,8 +204,8 @@ export function seedDatabase(db: Database.Database): void {
   }
 
   const insertRecipe = db.prepare(`
-    INSERT INTO recipes (title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO recipes (title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const insertIngredient = db.prepare(`
@@ -220,7 +227,8 @@ export function seedDatabase(db: Database.Database): void {
         recipe.difficulty,
         recipe.prep_time_minutes,
         recipe.cook_time_minutes,
-        recipe.servings
+        recipe.servings,
+        recipe.image_url
       );
       const recipeId = result.lastInsertRowid;
 
