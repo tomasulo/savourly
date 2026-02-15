@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { getDb } from "@/db/index";
+import { requireAuth } from "@/lib/auth-helpers";
 
 interface FormState {
   error?: string;
@@ -11,6 +12,14 @@ export async function createRecipe(
   _prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+  // Require authentication
+  let session;
+  try {
+    session = await requireAuth();
+  } catch {
+    return { error: "You must be logged in to create a recipe." };
+  }
+
   const title = formData.get("title") as string | null;
   const description = formData.get("description") as string | null;
   const cuisine = formData.get("cuisine") as string | null;
@@ -52,11 +61,12 @@ export async function createRecipe(
 
   const db = await getDb();
 
-  // Insert recipe
+  // Insert recipe with user_id from session
   const recipeResult = await db.execute({
-    sql: `INSERT INTO recipes (title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    sql: `INSERT INTO recipes (user_id, title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
+      session.user.id,
       title.trim(),
       description?.trim() || null,
       cuisine?.trim() || null,

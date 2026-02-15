@@ -12,7 +12,8 @@ This repo is **100% AI-developed** — all coding is done by AI agents. Optimize
 - **Language:** TypeScript (strict)
 - **Styling:** Tailwind CSS v4
 - **Components:** shadcn/ui (in `src/components/ui/`)
-- **Database:** better-sqlite3 (file: `savourly.db` at project root)
+- **Database:** Turso/LibSQL (local file or hosted)
+- **Authentication:** BetterAuth (email/password)
 - **i18n:** next-intl (EN + DE, messages in `src/messages/`)
 - **Package manager:** npm
 
@@ -178,14 +179,25 @@ test.describe('Feature Flow', () => {
 - Skip trivial getters/setters
 
 ## Database
-- SQLite via better-sqlite3
-- DB file: `savourly.db` at project root (gitignored)
+- Turso/LibSQL (SQLite-compatible)
+- DB file: `savourly.db` at project root for local development (gitignored)
 - Schema managed in `src/db/schema.ts` — use `CREATE TABLE IF NOT EXISTS`
+- Includes BetterAuth tables (user, session, account, verification)
 - Seed data in `src/db/seed.ts` — called automatically from `getDb()`
 - Connection singleton in `src/db/index.ts`
 - Query functions in `src/db/queries.ts`
 - Use prepared statements for all queries (prevents SQL injection)
-- Keep the DB schema ready for future multi-user support (include a `user_id` column where appropriate, default to 1 for now)
+- Recipes are associated with authenticated users via `user_id` column
+
+## Authentication
+- BetterAuth with email/password only
+- Server config: `src/lib/auth.ts`
+- Client hooks: `src/lib/auth-client.ts` (useSession, signIn, signUp, signOut)
+- Helper functions: `src/lib/auth-helpers.ts` (getSession, requireAuth)
+- API route: `src/app/api/auth/[...all]/route.ts`
+- Auth pages: `/login` and `/register`
+- Protected routes: `/recipes/new` and `/recipes/[id]/edit` require authentication
+- Public routes: landing page, recipe list, and recipe detail remain accessible to all
 
 ## Development Workflow
 
@@ -221,6 +233,4 @@ After completing all 5 issues in a sprint, do a brief retro:
 - What to improve for next sprint?
 
 ## Future Plans
-- **Authentication:** Planned (likely NextAuth.js or similar). NOT implemented yet. Keep codebase auth-ready: include `user_id` columns, but don't add auth middleware/providers
-- **Deployment:** Planned (likely Vercel). NOT implemented yet. No deploy-specific config needed now
-- Do NOT add auth or deployment code until explicitly requested
+- **Deployment:** Planned for Vercel with Turso hosted database

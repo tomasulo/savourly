@@ -101,5 +101,25 @@
     "recipeErrorTitle": "Rezeptfehler",
     "recipeErrorDescription": "Dieses Rezept konnte nicht geladen werden. Bitte versuche es erneut oder stöbere in anderen Rezepten.",
     "backToRecipes": "Zurück zu Rezepten"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "loginTitle": "Willkommen zurück",
+    "loginSubtitle": "Melde dich bei deinem Konto an",
+    "registerTitle": "Konto erstellen",
+    "registerSubtitle": "Beginne mit Savourly",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Bereits ein Konto?",
+    "loginError": "Ungültige E-Mail oder Passwort",
+    "registerError": "Registrierung fehlgeschlagen. Bitte versuche es erneut.",
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "loginRequired": "Bitte melde dich an, um fortzufahren",
+    "unauthorizedEdit": "Du kannst nur deine eigenen Rezepte bearbeiten",
+    "unauthorizedDelete": "Du kannst nur deine eigenen Rezepte löschen"
   }
 }

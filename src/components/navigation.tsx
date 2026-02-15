@@ -1,16 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { ChefHat } from "lucide-react";
+import { ChefHat, User, LogOut } from "lucide-react";
+import { useSession, signOut } from "@/lib/auth-client";
 
 export function Navigation() {
   const t = useTranslations("nav");
+  const tAuth = useTranslations("auth");
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session, isPending } = useSession();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/");
+  };
 
   const isActive = (path: string) => {
     if (path === "/" && pathname === "/") return true;
@@ -53,7 +62,35 @@ export function Navigation() {
             ))}
           </div>
 
-          <LanguageSwitcher />
+          <div className="flex items-center gap-4">
+            {!isPending && session?.user ? (
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <User size={16} />
+                  <span>{session.user.email}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut size={16} />
+                  {tAuth("logout")}
+                </Button>
+              </div>
+            ) : !isPending ? (
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/login">{tAuth("login")}</Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/register">{tAuth("register")}</Link>
+                </Button>
+              </div>
+            ) : null}
+            <LanguageSwitcher />
+          </div>
         </div>
 
         {/* Mobile Menu Button */}
@@ -98,7 +135,39 @@ export function Navigation() {
                 {link.label}
               </Link>
             ))}
-            <div className="pt-4 border-t">
+            <div className="pt-4 border-t space-y-4">
+              {!isPending && session?.user ? (
+                <>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
+                    <User size={16} />
+                    <span>{session.user.email}</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full flex items-center gap-2"
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    <LogOut size={16} />
+                    {tAuth("logout")}
+                  </Button>
+                </>
+              ) : !isPending ? (
+                <div className="space-y-2">
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                      {tAuth("login")}
+                    </Link>
+                  </Button>
+                  <Button className="w-full" asChild>
+                    <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                      {tAuth("register")}
+                    </Link>
+                  </Button>
+                </div>
+              ) : null}
               <LanguageSwitcher />
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { getDb } from "@/db/index";
+import { requireAuth } from "@/lib/auth-helpers";
 
 interface FormState {
   error?: string;
@@ -12,6 +13,31 @@ export async function updateRecipe(
   _prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+  // Require authentication
+  let session;
+  try {
+    session = await requireAuth();
+  } catch {
+    return { error: "You must be logged in to edit a recipe." };
+  }
+
+  const db = await getDb();
+
+  // Check if user owns this recipe
+  const recipeResult = await db.execute({
+    sql: "SELECT user_id FROM recipes WHERE id = ?",
+    args: [recipeId],
+  });
+
+  if (recipeResult.rows.length === 0) {
+    return { error: "Recipe not found." };
+  }
+
+  const recipeUserId = recipeResult.rows[0][0] as string;
+  if (recipeUserId !== session.user.id) {
+    return { error: "You can only edit your own recipes." };
+  }
+
   const title = formData.get("title") as string | null;
   const description = formData.get("description") as string | null;
   const cuisine = formData.get("cuisine") as string | null;
@@ -50,8 +76,6 @@ export async function updateRecipe(
   if (validInstructions.length === 0) {
     return { error: "At least one instruction step is required." };
   }
-
-  const db = await getDb();
 
   // Prepare all statements for batch execution
   const statements: { sql: string; args: (string | number | null)[] }[] = [];
@@ -137,7 +161,30 @@ export async function updateRecipe(
 }
 
 export async function deleteRecipe(recipeId: number): Promise<void> {
+  // Require authentication
+  let session;
+  try {
+    session = await requireAuth();
+  } catch {
+    redirect("/login");
+  }
+
   const db = await getDb();
+
+  // Check if user owns this recipe
+  const recipeResult = await db.execute({
+    sql: "SELECT user_id FROM recipes WHERE id = ?",
+    args: [recipeId],
+  });
+
+  if (recipeResult.rows.length === 0) {
+    redirect("/recipes");
+  }
+
+  const recipeUserId = recipeResult.rows[0][0] as string;
+  if (recipeUserId !== session.user.id) {
+    redirect("/recipes");
+  }
 
   await db.execute({
     sql: "DELETE FROM recipes WHERE id = ?",
