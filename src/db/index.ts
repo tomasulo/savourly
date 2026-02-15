@@ -1,6 +1,7 @@
 import Database from "better-sqlite3";
 import path from "node:path";
 import { initializeSchema } from "./schema";
+import { seedDatabase } from "./seed";
 
 const DB_PATH = path.join(process.cwd(), "savourly.db");
 
@@ -12,6 +13,7 @@ export function getDb(): Database.Database {
     _db.pragma("journal_mode = WAL");
     _db.pragma("foreign_keys = ON");
     initializeSchema(_db);
+    seedDatabase(_db);
   }
   return _db;
 }
