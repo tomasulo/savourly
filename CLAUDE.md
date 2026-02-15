@@ -54,27 +54,33 @@ npm run start     # Start production server
 ```bash
 npx shadcn@latest add <component-name>
 ```
-Components install to `src/components/ui/`. Available base components: button, card, input, badge. Add more as needed.
+Components install to `src/components/ui/`. Available: button, card, input, badge, select, textarea, label. Add more as needed.
 
 ## Project Structure
 ```
 savourly/
 ├── src/
 │   ├── app/              # App Router pages & layouts
+│   │   └── recipes/
+│   │       ├── new/      # Recipe creation (page, form, actions)
+│   │       └── [id]/     # Recipe detail (page, recipe-detail component)
 │   ├── components/       # Shared UI components
 │   │   └── ui/           # shadcn/ui primitives (DO NOT edit these manually)
 │   ├── db/               # SQLite schema, connection, queries
-│   │   ├── index.ts      # DB connection singleton
-│   │   ├── schema.ts     # CREATE TABLE statements & migrations
-│   │   └── seed.ts       # Seed data for development
+│   │   ├── index.ts      # DB connection singleton (getDb())
+│   │   ├── schema.ts     # CREATE TABLE statements
+│   │   ├── seed.ts       # 6 sample recipes for development
+│   │   └── queries.ts    # Query functions (getRecipeWithDetails, getCookingLogs)
 │   ├── lib/              # Utilities & shared types
 │   │   ├── utils.ts      # cn() utility from shadcn
-│   │   └── types.ts      # Shared TypeScript interfaces/types
+│   │   └── types.ts      # Recipe, Ingredient, Instruction, CookingLog, RecipeWithDetails
 │   └── messages/         # i18n JSON files
 │       ├── en.json       # English
 │       └── de.json       # German
 ├── CLAUDE.md             # This file — agent conventions
 ├── README.md             # Project overview
+├── .claude/
+│   └── settings.json     # Permissions for AI agents (git, gh, npm, npx allowed)
 └── .github/
     └── ISSUE_TEMPLATE/   # Issue templates for features & bugs
 ```
@@ -84,6 +90,7 @@ savourly/
 - **Commits:** Conventional commits — `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`
 - **PRs:** Always run `npm run build` before opening a PR. PR title matches the issue title
 - **Never push directly to `main`** — always use feature branches + PRs
+- **Git identity (repo-local):** email `917136+tomasulo@users.noreply.github.com`, name `Thomas`
 
 ## Code Conventions
 - Functional components only (no class components)
@@ -101,32 +108,44 @@ savourly/
 - SQLite via better-sqlite3
 - DB file: `savourly.db` at project root (gitignored)
 - Schema managed in `src/db/schema.ts` — use `CREATE TABLE IF NOT EXISTS`
-- Seed data in `src/db/seed.ts`
+- Seed data in `src/db/seed.ts` — called automatically from `getDb()`
 - Connection singleton in `src/db/index.ts`
+- Query functions in `src/db/queries.ts`
 - Use prepared statements for all queries (prevents SQL injection)
 - Keep the DB schema ready for future multi-user support (include a `user_id` column where appropriate, default to 1 for now)
 
-## Agent Workflow
+## Development Workflow
+
+### Single-Agent Workflow (Cost-Optimized)
+The main session (Sonnet) handles BOTH orchestration AND coding. Only spawn a Haiku subagent for QA reviews.
+
 ```
-PM creates issue → Coding Agent implements → PR created
-    → QA Agent reviews → Approved → PM merges
-                       → Changes requested → Coding Agent fixes → re-review
+For each issue:
+1. Read issue from GitHub: gh issue view <N>
+2. Create branch: git checkout -b issue-<N>-<slug> main
+3. Implement the feature (write files, install components if needed)
+4. Run: npm run build — must pass with zero errors
+5. Commit (conventional commits), push, create PR via gh
+6. Spawn Haiku QA subagent to review the PR
+7. Fix any QA findings, push again
+8. Merge PR: gh pr merge <N> --squash --delete-branch
+9. Update main: git checkout main && git pull
+10. Move to next issue
 ```
 
-### Coding Agent Checklist
-1. Read this file and the issue description fully
-2. Create branch: `issue-<N>-<slug>` from `main`
-3. Implement the feature following all conventions above
-4. Run `npm run build` — must pass with zero errors
-5. Commit with conventional commit messages
-6. Push branch and create PR with description referencing the issue
-7. Wait for QA review
+### QA Agent (Haiku Subagent)
+Spawn with `model: haiku`, `subagent_type: general-purpose`. Give it:
+- The PR number and repo name
+- Instruction to read all changed files
+- Instruction to run `npm run build`
+- Instruction to post review as `gh pr comment`
+- The issue acceptance criteria
 
-### QA Agent Checklist
-1. Read the issue acceptance criteria
-2. Review the PR diff for: correctness, code quality, design system compliance, a11y, security
-3. Run `npm run build` to verify no build errors
-4. Post review: approve or request specific changes
+### Sprint Retro
+After completing all 5 issues in a sprint, do a brief retro:
+- What worked well?
+- What slowed things down?
+- What to improve for next sprint?
 
 ## Future Plans
 - **Authentication:** Planned (likely NextAuth.js or similar). NOT implemented yet. Keep codebase auth-ready: include `user_id` columns, but don't add auth middleware/providers
