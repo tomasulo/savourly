@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getRecipeWithDetails } from "@/db/queries";
+import { getSession } from "@/lib/auth-helpers";
 import EditRecipeForm from "./edit-recipe-form";
 
 interface EditRecipePageProps {
@@ -11,17 +12,28 @@ interface EditRecipePageProps {
 }
 
 export default async function EditRecipePage({ params }: EditRecipePageProps) {
-  const { id } = await params;
+  const { locale, id } = await params;
   const recipeId = parseInt(id, 10);
 
   if (isNaN(recipeId)) {
     notFound();
   }
 
+  // Check authentication
+  const session = await getSession();
+  if (!session?.user) {
+    redirect(`/${locale}/login`);
+  }
+
   const recipe = await getRecipeWithDetails(recipeId);
 
   if (!recipe) {
     notFound();
+  }
+
+  // Check if user owns this recipe
+  if (recipe.user_id !== session.user.id) {
+    redirect(`/${locale}/recipes`);
   }
 
   const t = await getTranslations("recipe");

@@ -1,6 +1,6 @@
 export interface Recipe {
   id: number;
-  user_id: number;
+  user_id: string;
   title: string;
   description: string | null;
   cuisine: string | null;
@@ -32,7 +32,7 @@ export interface Instruction {
 export interface CookingLog {
   id: number;
   recipe_id: number;
-  user_id: number;
+  user_id: string;
   cooked_at: string;
   rating: number | null;
   notes: string | null;

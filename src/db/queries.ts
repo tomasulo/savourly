@@ -22,7 +22,7 @@ export async function getRecipeWithDetails(id: number): Promise<RecipeWithDetail
   // Map the row array to an object using column names
   const recipe: Recipe = {
     id: recipeResult.rows[0][0] as number,
-    user_id: recipeResult.rows[0][1] as number,
+    user_id: recipeResult.rows[0][1] as string,
     title: recipeResult.rows[0][2] as string,
     description: recipeResult.rows[0][3] as string | null,
     cuisine: recipeResult.rows[0][4] as string | null,
@@ -79,7 +79,7 @@ export async function getCookingLogs(recipeId: number): Promise<CookingLog[]> {
   return result.rows.map((row) => ({
     id: row[0] as number,
     recipe_id: row[1] as number,
-    user_id: row[2] as number,
+    user_id: row[2] as string,
     cooked_at: row[3] as string,
     rating: row[4] as number | null,
     notes: row[5] as string | null,
@@ -119,7 +119,7 @@ export async function getRecipes(filters?: RecipeFilters): Promise<Recipe[]> {
 
   return result.rows.map((row) => ({
     id: row[0] as number,
-    user_id: row[1] as number,
+    user_id: row[1] as string,
     title: row[2] as string,
     description: row[3] as string | null,
     cuisine: row[4] as string | null,

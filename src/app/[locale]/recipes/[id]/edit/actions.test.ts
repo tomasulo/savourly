@@ -8,6 +8,13 @@ vi.mock('@/db/index', () => ({
   getDb: vi.fn(),
 }))
 
+// Mock auth helpers
+vi.mock('@/lib/auth-helpers', () => ({
+  requireAuth: vi.fn(() =>
+    Promise.resolve({ user: { id: '1', email: 'test@example.com' } })
+  ),
+}))
+
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
   redirect: vi.fn((url: string) => {
@@ -19,6 +26,13 @@ describe('Recipe Edit Actions', () => {
   let mockDb: {
     execute: ReturnType<typeof vi.fn>
     batch: ReturnType<typeof vi.fn>
+  }
+
+  const mockOwnershipCheck = () => {
+    mockDb.execute.mockResolvedValueOnce({
+      rows: [['1']], // user_id matches session user id '1'
+      columns: ['user_id'],
+    })
   }
 
   beforeEach(() => {
@@ -36,6 +50,8 @@ describe('Recipe Edit Actions', () => {
 
   describe('updateRecipe', () => {
     it('should update recipe with valid data', async () => {
+      mockOwnershipCheck()
+
       const formData = new FormData()
       formData.set('title', 'Updated Carbonara')
       formData.set('description', 'Updated description')
@@ -72,6 +88,8 @@ describe('Recipe Edit Actions', () => {
     })
 
     it('should return error when title is missing', async () => {
+      mockOwnershipCheck()
+
       const formData = new FormData()
       formData.set('title', '')
       formData.append('ingredient_name', 'Pasta')
@@ -84,6 +102,8 @@ describe('Recipe Edit Actions', () => {
     })
 
     it('should return error when difficulty is invalid', async () => {
+      mockOwnershipCheck()
+
       const formData = new FormData()
       formData.set('title', 'Test Recipe')
       formData.set('difficulty', 'invalid')
@@ -97,6 +117,8 @@ describe('Recipe Edit Actions', () => {
     })
 
     it('should return error when no ingredients provided', async () => {
+      mockOwnershipCheck()
+
       const formData = new FormData()
       formData.set('title', 'Test Recipe')
       formData.append('ingredient_name', '')
@@ -109,6 +131,8 @@ describe('Recipe Edit Actions', () => {
     })
 
     it('should return error when no instructions provided', async () => {
+      mockOwnershipCheck()
+
       const formData = new FormData()
       formData.set('title', 'Test Recipe')
       formData.append('ingredient_name', 'Pasta')
@@ -121,6 +145,8 @@ describe('Recipe Edit Actions', () => {
     })
 
     it('should handle multiple ingredients and instructions', async () => {
+      mockOwnershipCheck()
+
       const formData = new FormData()
       formData.set('title', 'Test Recipe')
       formData.append('ingredient_name', 'Pasta')
@@ -142,6 +168,8 @@ describe('Recipe Edit Actions', () => {
     })
 
     it('should handle optional fields as null', async () => {
+      mockOwnershipCheck()
+
       const formData = new FormData()
       formData.set('title', 'Test Recipe')
       formData.append('ingredient_name', 'Pasta')
@@ -159,27 +187,34 @@ describe('Recipe Edit Actions', () => {
 
   describe('deleteRecipe', () => {
     it('should delete recipe and redirect to recipe list', async () => {
+      mockOwnershipCheck()
+
       try {
         await deleteRecipe(1)
       } catch (error) {
         expect((error as Error).message).toBe('REDIRECT:/recipes')
       }
 
-      expect(mockDb.execute).toHaveBeenCalledWith({
-        sql: expect.stringContaining('DELETE FROM recipes WHERE id = ?'),
+      // First call is ownership check, second is delete
+      expect(mockDb.execute).toHaveBeenCalledTimes(2)
+      expect(mockDb.execute).toHaveBeenNthCalledWith(2, {
+        sql: 'DELETE FROM recipes WHERE id = ?',
         args: [1],
       })
     })
 
     it('should handle different recipe IDs', async () => {
+      mockOwnershipCheck()
+
       try {
         await deleteRecipe(42)
       } catch (error) {
         expect((error as Error).message).toBe('REDIRECT:/recipes')
       }
 
-      expect(mockDb.execute).toHaveBeenCalledWith({
-        sql: expect.stringContaining('DELETE FROM recipes WHERE id = ?'),
+      expect(mockDb.execute).toHaveBeenCalledTimes(2)
+      expect(mockDb.execute).toHaveBeenNthCalledWith(2, {
+        sql: 'DELETE FROM recipes WHERE id = ?',
         args: [42],
       })
     })
