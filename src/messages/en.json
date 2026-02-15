@@ -7,6 +7,7 @@
   "common": {
     "search": "Search...",
     "filter": "Filter",
+    "clearFilters": "Clear filters",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
