@@ -1,0 +1,32 @@
+{
+  "common": {
+    "appName": "Savourly",
+    "search": "Search",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Something went wrong"
+  },
+  "nav": {
+    "home": "Home",
+    "recipes": "Recipes",
+    "addRecipe": "Add Recipe"
+  },
+  "recipe": {
+    "title": "Title",
+    "description": "Description",
+    "ingredients": "Ingredients",
+    "instructions": "Instructions",
+    "servings": "Servings",
+    "prepTime": "Prep Time",
+    "cookTime": "Cook Time",
+    "difficulty": "Difficulty",
+    "cuisine": "Cuisine",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "minutes": "min"
+  }
+}

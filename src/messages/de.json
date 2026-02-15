@@ -1,0 +1,32 @@
+{
+  "common": {
+    "appName": "Savourly",
+    "search": "Suche",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "loading": "Laden...",
+    "error": "Etwas ist schiefgelaufen"
+  },
+  "nav": {
+    "home": "Startseite",
+    "recipes": "Rezepte",
+    "addRecipe": "Rezept hinzufügen"
+  },
+  "recipe": {
+    "title": "Titel",
+    "description": "Beschreibung",
+    "ingredients": "Zutaten",
+    "instructions": "Zubereitung",
+    "servings": "Portionen",
+    "prepTime": "Vorbereitungszeit",
+    "cookTime": "Kochzeit",
+    "difficulty": "Schwierigkeit",
+    "cuisine": "Küche",
+    "easy": "Einfach",
+    "medium": "Mittel",
+    "hard": "Schwer",
+    "minutes": "Min"
+  }
+}
