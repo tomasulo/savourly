@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,22 +28,23 @@ interface InstructionRow {
   content: string;
 }
 
-let nextIngredientId = 1;
-let nextInstructionId = 1;
-
-function createIngredientRow(): IngredientRow {
-  return { id: nextIngredientId++, name: "", amount: "", unit: "" };
-}
-
-function createInstructionRow(): InstructionRow {
-  return { id: nextInstructionId++, content: "" };
-}
-
 export default function RecipeForm() {
   const t = useTranslations("recipe");
   const tDiff = useTranslations("difficulty");
   const tCommon = useTranslations("common");
   const [state, formAction, isPending] = useActionState(createRecipe, {});
+
+  const nextIngredientId = useRef(1);
+  const nextInstructionId = useRef(1);
+
+  const createIngredientRow = (): IngredientRow => {
+    return { id: nextIngredientId.current++, name: "", amount: "", unit: "" };
+  };
+
+  const createInstructionRow = (): InstructionRow => {
+    return { id: nextInstructionId.current++, content: "" };
+  };
+
   const [ingredients, setIngredients] = useState<IngredientRow[]>([
     createIngredientRow(),
   ]);
