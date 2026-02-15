@@ -199,38 +199,35 @@ test.describe('Feature Flow', () => {
 - Protected routes: `/recipes/new` and `/recipes/[id]/edit` require authentication
 - Public routes: landing page, recipe list, and recipe detail remain accessible to all
 
+## Agent Efficiency Rules
+
+**CRITICAL: Follow these rules to minimize token waste and maximize shipping speed.**
+
+1. **Never create documentation files** (*.md) unless the issue explicitly requests it. No implementation summaries, testing guides, or changelogs.
+2. **Build early, build often.** Run `npm run build` after core changes — don't wait until the end. This catches type errors before you've written 500 more lines.
+3. **Run tests early.** Run `npm run test -- --run` after modifying existing test files or adding new ones. Fix failures immediately.
+4. **Ship before perfection.** Commit, push, and create the PR before running out of turns. A PR with minor issues is better than uncommitted code.
+5. **Don't read files you don't need.** Only read files directly relevant to your changes. Don't explore "just in case."
+6. **Don't write unused code.** No wrapper components, helper files, or abstractions you don't immediately use. Delete dead code.
+7. **Keep vi.mock calls correct.** When using `vi.mock` with variables, use `vi.hoisted()` to avoid hoisting issues. This is a common Vitest pitfall.
+8. **Prioritize this order:** code → build → test → fix → commit → push → PR. Never reorder.
+
 ## Development Workflow
 
 ### Single-Agent Workflow (Cost-Optimized)
-The main session (Sonnet) handles BOTH orchestration AND coding. Only spawn a Haiku subagent for QA reviews.
+Sonnet implements issues. PM (Opus) orchestrates, reviews, and merges. Sonnet does NOT merge.
 
 ```
 For each issue:
 1. Read issue from GitHub: gh issue view <N>
-2. Create branch: git checkout -b issue-<N>-<slug> main
-3. Implement the feature (write files, install components if needed)
-4. Run: npm run build — must pass with zero errors
-5. Commit (conventional commits), push, create PR via gh
-6. Spawn Haiku QA subagent to review the PR
-7. Fix any QA findings, push again
-8. Merge PR: gh pr merge <N> --squash --delete-branch
-9. Update main: git checkout main && git pull
-10. Move to next issue
+2. Read only the files you need to modify
+3. Create branch: git checkout -b issue-<N>-<slug> main
+4. Implement the feature
+5. Run: npm run build — must pass with zero errors
+6. Run: npm run test -- --run — fix any failures
+7. Commit (conventional commits), push, create PR via gh
+8. Do NOT merge — PM reviews and merges
 ```
-
-### QA Agent (Haiku Subagent)
-Spawn with `model: haiku`, `subagent_type: general-purpose`. Give it:
-- The PR number and repo name
-- Instruction to read all changed files
-- Instruction to run `npm run build`
-- Instruction to post review as `gh pr comment`
-- The issue acceptance criteria
-
-### Sprint Retro
-After completing all 5 issues in a sprint, do a brief retro:
-- What worked well?
-- What slowed things down?
-- What to improve for next sprint?
 
 ## Future Plans
 - **Deployment:** Planned for Vercel with Turso hosted database
