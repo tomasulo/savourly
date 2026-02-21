@@ -5,7 +5,6 @@ import { SearchBar } from "../search-bar";
 import { FilterChips } from "../filter-chips";
 import { getTranslations } from "next-intl/server";
 import { getSession } from "@/lib/auth-helpers";
-import { redirect } from "next/navigation";
 import { Compass } from "lucide-react";
 
 interface DiscoverPageProps {
@@ -22,13 +21,10 @@ export const metadata = {
 
 export default async function DiscoverPage({ searchParams }: DiscoverPageProps) {
   const session = await getSession();
-  if (!session?.user) {
-    redirect("/login");
-  }
+  const userId = session?.user?.id ?? null;
 
   const t = await getTranslations("discover");
   const params = await searchParams;
-  const userId = session.user.id;
 
   const recipes = await getDiscoverRecipes(userId, {
     query: params.q,
@@ -65,7 +61,9 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
             {recipes.map((recipe) => (
               <div key={recipe.id} className="flex flex-col gap-2">
                 <RecipeCard recipe={recipe} currentUserId={userId} />
-                <BookmarkButton recipeId={recipe.id} isFavorited={recipe.is_favorited} />
+                {userId && (
+                  <BookmarkButton recipeId={recipe.id} isFavorited={recipe.is_favorited} />
+                )}
               </div>
             ))}
           </div>

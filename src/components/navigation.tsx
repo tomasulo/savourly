@@ -29,8 +29,8 @@ export function Navigation() {
 
   const navLinks = [
     { href: "/", label: t("title") },
-    { href: "/recipes", label: t("recipes") },
-    ...(session?.user ? [{ href: "/recipes/discover", label: t("discover") }] : []),
+    { href: "/recipes/discover", label: t("discover") },
+    ...(session?.user ? [{ href: "/recipes", label: t("recipes") }] : []),
     { href: "/recipes/new", label: t("addRecipe") },
   ];
 

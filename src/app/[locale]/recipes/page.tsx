@@ -1,4 +1,4 @@
-import { getRecipes, getAllCuisines } from "@/db/queries";
+import { getMyRecipes, getAllCuisines } from "@/db/queries";
 import { RecipeCard } from "@/components/recipe-card";
 import { SearchBar } from "./search-bar";
 import { FilterChips } from "./filter-chips";
@@ -7,6 +7,7 @@ import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import { UtensilsCrossed } from "lucide-react";
 import { getSession } from "@/lib/auth-helpers";
+import { redirect } from "next/navigation";
 
 interface RecipesPageProps {
   searchParams: Promise<{
@@ -14,29 +15,35 @@ interface RecipesPageProps {
     cuisine?: string;
     difficulty?: string;
   }>;
+  params: Promise<{ locale: string }>;
 }
 
 export const metadata = {
-  title: "Recipes — Savourly",
+  title: "My Recipes — Savourly",
 };
 
-export default async function RecipesPage({ searchParams }: RecipesPageProps) {
+export default async function RecipesPage({ searchParams, params }: RecipesPageProps) {
+  const { locale } = await params;
+  const session = await getSession();
+
+  if (!session?.user) {
+    redirect(`/${locale}/login`);
+  }
+
   const t = await getTranslations("recipe");
   const tEmpty = await getTranslations("empty");
   const tNav = await getTranslations("nav");
 
-  const params = await searchParams;
-  const session = await getSession();
-  const userId = session?.user?.id;
+  const resolvedParams = await searchParams;
+  const userId = session.user.id;
 
   const filters = {
-    query: params.q,
-    cuisine: params.cuisine,
-    difficulty: params.difficulty,
-    userId,
+    query: resolvedParams.q,
+    cuisine: resolvedParams.cuisine,
+    difficulty: resolvedParams.difficulty,
   };
 
-  const recipes = await getRecipes(filters);
+  const recipes = await getMyRecipes(userId, filters);
   const allCuisines = await getAllCuisines();
 
   return (

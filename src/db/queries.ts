@@ -163,18 +163,67 @@ export async function getRecipes(filters?: RecipeFilters): Promise<RecipeListIte
   return result.rows.map(mapRecipeListRow);
 }
 
-export async function getDiscoverRecipes(userId: string, filters?: Omit<RecipeFilters, "userId">): Promise<RecipeListItem[]> {
+export async function getMyRecipes(userId: string, filters?: Omit<RecipeFilters, "userId">): Promise<RecipeListItem[]> {
   const db = await getDb();
-  const args: (string | number)[] = [userId, userId];
+  const args: (string | number)[] = [userId];
 
   let sql = `SELECT r.id, r.user_id, r.title, r.description, r.cuisine, r.difficulty,
                     r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                     r.is_public, r.created_at, r.updated_at,
-                    0 AS is_own,
-                    (CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END) AS is_favorited
+                    1 AS is_own,
+                    0 AS is_favorited
              FROM recipes r
-             LEFT JOIN favorites f ON f.recipe_id = r.id AND f.user_id = ?
-             WHERE r.is_public = 1 AND r.user_id != ?`;
+             WHERE r.user_id = ?`;
+
+  if (filters?.query) {
+    sql += " AND r.title LIKE ?";
+    args.push(`%${filters.query}%`);
+  }
+
+  if (filters?.cuisine) {
+    sql += " AND r.cuisine = ?";
+    args.push(filters.cuisine);
+  }
+
+  if (filters?.difficulty) {
+    sql += " AND r.difficulty = ?";
+    args.push(filters.difficulty);
+  }
+
+  sql += " ORDER BY r.created_at DESC";
+
+  const result = await db.execute({ sql, args });
+  return result.rows.map(mapRecipeListRow);
+}
+
+export async function getDiscoverRecipes(userId: string | null, filters?: Omit<RecipeFilters, "userId">): Promise<RecipeListItem[]> {
+  const db = await getDb();
+
+  let sql: string;
+  let args: (string | number)[];
+
+  if (userId) {
+    // Authenticated: public recipes from other users, with favorite status
+    args = [userId, userId];
+    sql = `SELECT r.id, r.user_id, r.title, r.description, r.cuisine, r.difficulty,
+                  r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
+                  r.is_public, r.created_at, r.updated_at,
+                  0 AS is_own,
+                  (CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END) AS is_favorited
+           FROM recipes r
+           LEFT JOIN favorites f ON f.recipe_id = r.id AND f.user_id = ?
+           WHERE r.is_public = 1 AND r.user_id != ?`;
+  } else {
+    // Guest: all public recipes
+    args = [];
+    sql = `SELECT r.id, r.user_id, r.title, r.description, r.cuisine, r.difficulty,
+                  r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
+                  r.is_public, r.created_at, r.updated_at,
+                  0 AS is_own,
+                  0 AS is_favorited
+           FROM recipes r
+           WHERE r.is_public = 1`;
+  }
 
   if (filters?.query) {
     sql += " AND r.title LIKE ?";
