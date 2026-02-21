@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -138,7 +138,7 @@ export function RecipeDetail({ recipe, cookingLogs, currentUserId, isFavorited }
                 size={16}
                 className={favorited ? "fill-primary text-primary" : ""}
               />
-              {favorited ? tCommon("unsave") : tCommon("saved")}
+              {favorited ? tCommon("unsave") : tCommon("save")}
             </Button>
           )}
           {isOwner && (
