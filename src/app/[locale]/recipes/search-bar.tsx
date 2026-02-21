@@ -16,6 +16,9 @@ export function SearchBar() {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
+      const currentQ = searchParams.get("q") || "";
+      if (query === currentQ) return;
+
       const params = new URLSearchParams(searchParams.toString());
 
       if (query) {
