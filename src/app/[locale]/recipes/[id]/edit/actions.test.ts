@@ -22,6 +22,11 @@ vi.mock('next/navigation', () => ({
   }),
 }))
 
+// Mock next-intl/server
+vi.mock('next-intl/server', () => ({
+  getLocale: vi.fn(() => Promise.resolve('en')),
+}))
+
 describe('Recipe Edit Actions', () => {
   let mockDb: {
     execute: ReturnType<typeof vi.fn>
@@ -70,7 +75,7 @@ describe('Recipe Edit Actions', () => {
         await updateRecipe(1, {}, formData)
       } catch (error) {
         // Expected redirect error
-        expect((error as Error).message).toBe('REDIRECT:/recipes/1')
+        expect((error as Error).message).toBe('REDIRECT:/en/recipes/1')
       }
 
       // Verify batch was called with update and delete statements
@@ -161,7 +166,7 @@ describe('Recipe Edit Actions', () => {
       try {
         await updateRecipe(1, {}, formData)
       } catch (error) {
-        expect((error as Error).message).toBe('REDIRECT:/recipes/1')
+        expect((error as Error).message).toBe('REDIRECT:/en/recipes/1')
       }
 
       expect(mockDb.batch).toHaveBeenCalled()
@@ -178,7 +183,7 @@ describe('Recipe Edit Actions', () => {
       try {
         await updateRecipe(1, {}, formData)
       } catch (error) {
-        expect((error as Error).message).toBe('REDIRECT:/recipes/1')
+        expect((error as Error).message).toBe('REDIRECT:/en/recipes/1')
       }
 
       expect(mockDb.batch).toHaveBeenCalled()
@@ -192,7 +197,7 @@ describe('Recipe Edit Actions', () => {
       try {
         await deleteRecipe(1)
       } catch (error) {
-        expect((error as Error).message).toBe('REDIRECT:/recipes')
+        expect((error as Error).message).toBe('REDIRECT:/en/recipes')
       }
 
       // First call is ownership check, second is delete
@@ -209,7 +214,7 @@ describe('Recipe Edit Actions', () => {
       try {
         await deleteRecipe(42)
       } catch (error) {
-        expect((error as Error).message).toBe('REDIRECT:/recipes')
+        expect((error as Error).message).toBe('REDIRECT:/en/recipes')
       }
 
       expect(mockDb.execute).toHaveBeenCalledTimes(2)

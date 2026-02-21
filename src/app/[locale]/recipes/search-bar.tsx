@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -13,8 +13,14 @@ export function SearchBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     const timeoutId = setTimeout(() => {
       const params = new URLSearchParams(searchParams.toString());
 
