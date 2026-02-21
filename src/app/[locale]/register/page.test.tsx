@@ -80,7 +80,7 @@ describe("RegisterPage", () => {
   });
 
   it("shows error message on failed registration", async () => {
-    mockSignUp.mockRejectedValue(new Error("Registration failed"));
+    mockSignUp.mockResolvedValue({ error: { message: "Registration failed" } });
 
     render(<RegisterPage />);
 

@@ -30,19 +30,20 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    try {
-      await signUp.email({
-        email,
-        password,
-        name: email.split("@")[0], // Use email prefix as default name
-      });
-      router.refresh();
-      router.push("/recipes");
-    } catch (err) {
+    const { error: signUpError } = await signUp.email({
+      email,
+      password,
+      name: email.split("@")[0],
+    });
+
+    if (signUpError) {
       setError(t("registerError"));
-    } finally {
       setLoading(false);
+      return;
     }
+
+    router.refresh();
+    router.push("/recipes");
   };
 
   return (

@@ -23,18 +23,16 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    try {
-      await signIn.email({
-        email,
-        password,
-      });
-      router.refresh();
-      router.push("/recipes");
-    } catch (err) {
+    const { error: signInError } = await signIn.email({ email, password });
+
+    if (signInError) {
       setError(t("loginError"));
-    } finally {
       setLoading(false);
+      return;
     }
+
+    router.refresh();
+    router.push("/recipes");
   };
 
   return (

@@ -55,7 +55,7 @@ describe("LoginPage", () => {
   });
 
   it("shows error message on failed login", async () => {
-    mockSignIn.mockRejectedValue(new Error("Invalid credentials"));
+    mockSignIn.mockResolvedValue({ error: { message: "Invalid credentials" } });
 
     render(<LoginPage />);
 
