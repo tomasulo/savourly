@@ -14,6 +14,8 @@ export function SearchBar() {
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
   const isFirstRender = useRef(true);
+  const searchParamsRef = useRef(searchParams);
+  searchParamsRef.current = searchParams;
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -22,7 +24,7 @@ export function SearchBar() {
     }
 
     const timeoutId = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParamsRef.current.toString());
 
       if (query) {
         params.set("q", query);
@@ -34,7 +36,7 @@ export function SearchBar() {
     }, 150); // Debounce search (reduced from 300ms for snappier feel)
 
     return () => clearTimeout(timeoutId);
-  }, [query, pathname, router, searchParams]);
+  }, [query, pathname, router]);
 
   return (
     <div className="relative mb-4">

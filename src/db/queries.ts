@@ -165,15 +165,16 @@ export async function getRecipes(filters?: RecipeFilters): Promise<RecipeListIte
 
 export async function getMyRecipes(userId: string, filters?: Omit<RecipeFilters, "userId">): Promise<RecipeListItem[]> {
   const db = await getDb();
-  const args: (string | number)[] = [userId];
+  const args: (string | number)[] = [userId, userId, userId];
 
   let sql = `SELECT r.id, r.user_id, r.title, r.description, r.cuisine, r.difficulty,
                     r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                     r.is_public, r.created_at, r.updated_at,
-                    1 AS is_own,
-                    0 AS is_favorited
+                    (CASE WHEN r.user_id = ? THEN 1 ELSE 0 END) AS is_own,
+                    (CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END) AS is_favorited
              FROM recipes r
-             WHERE r.user_id = ?`;
+             LEFT JOIN favorites f ON f.recipe_id = r.id AND f.user_id = ?
+             WHERE (r.user_id = ? OR (r.is_public = 1 AND f.id IS NOT NULL))`;
 
   if (filters?.query) {
     sql += " AND r.title LIKE ?";
