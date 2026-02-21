@@ -42,23 +42,33 @@ export default async function LandingPage() {
               {t("subtitle")}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Link href="/recipes/new">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 flex-wrap">
+              <Link href="/recipes">
                 <Button
                   size="lg"
                   className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
                 >
-                  {t("addFirstRecipe")} →
+                  {t("myRecipes")}
                 </Button>
               </Link>
 
-              <Link href="/recipes">
+              <Link href="/recipes/discover">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="text-lg px-8 py-6 border-2 hover:border-primary hover:text-primary transition-all duration-200"
+                  className="text-lg px-8 py-6 border-2 border-white/70 text-white hover:bg-white/10 hover:border-white transition-all duration-200"
                 >
-                  {t("browseRecipes")}
+                  {t("discoverRecipes")}
+                </Button>
+              </Link>
+
+              <Link href="/recipes/new">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-8 py-6 border-2 border-white/70 text-white hover:bg-white/10 hover:border-white transition-all duration-200"
+                >
+                  {t("addFirstRecipe")} →
                 </Button>
               </Link>
             </div>
@@ -154,14 +164,36 @@ export default async function LandingPage() {
             {t("joinSavourly")}
           </p>
 
-          <Link href="/recipes/new">
-            <Button
-              size="lg"
-              className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-            >
-              {t("addFirstRecipe")} →
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
+            <Link href="/recipes">
+              <Button
+                size="lg"
+                className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+              >
+                {t("myRecipes")}
+              </Button>
+            </Link>
+
+            <Link href="/recipes/discover">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 py-6 transition-all duration-200 hover:scale-105"
+              >
+                {t("discoverRecipes")}
+              </Button>
+            </Link>
+
+            <Link href="/recipes/new">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 py-6 transition-all duration-200 hover:scale-105"
+              >
+                {t("addFirstRecipe")} →
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>
