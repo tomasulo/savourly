@@ -240,6 +240,19 @@ export default function EditRecipeForm({ recipe }: EditRecipeFormProps) {
                 defaultValue={recipe.servings}
               />
             </div>
+
+            <div className="mt-4 w-48 space-y-2">
+              <Label>{t("visibility")}</Label>
+              <Select name="is_public" defaultValue={String(recipe.is_public)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">{t("private")}</SelectItem>
+                  <SelectItem value="1">{t("public")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardContent>
         </Card>
 

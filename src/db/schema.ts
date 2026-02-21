@@ -1,6 +1,15 @@
 import type { Client } from "@libsql/client";
 
 export async function initializeSchema(db: Client): Promise<void> {
+  // Migration: add is_public column to existing recipes tables
+  try {
+    await db.execute(
+      "ALTER TABLE recipes ADD COLUMN is_public INTEGER NOT NULL DEFAULT 1"
+    );
+  } catch {
+    // Column already exists — ignore
+  }
+
   await db.executeMultiple(`
     -- BetterAuth tables
     CREATE TABLE IF NOT EXISTS user (
@@ -67,6 +76,7 @@ export async function initializeSchema(db: Client): Promise<void> {
       cook_time_minutes INTEGER,
       servings INTEGER NOT NULL DEFAULT 4,
       image_url TEXT,
+      is_public INTEGER NOT NULL DEFAULT 1,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
@@ -111,5 +121,17 @@ export async function initializeSchema(db: Client): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_cooking_logs_recipe_id ON cooking_logs(recipe_id);
     CREATE INDEX IF NOT EXISTS idx_cooking_logs_user_id ON cooking_logs(user_id);
     CREATE INDEX IF NOT EXISTS idx_cooking_logs_recipe_user ON cooking_logs(recipe_id, user_id);
+
+    -- Favorites (bookmarks) table
+    CREATE TABLE IF NOT EXISTS favorites (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id TEXT NOT NULL,
+      recipe_id INTEGER NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(user_id, recipe_id),
+      FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON favorites(user_id);
+    CREATE INDEX IF NOT EXISTS idx_favorites_recipe_id ON favorites(recipe_id);
   `);
 }

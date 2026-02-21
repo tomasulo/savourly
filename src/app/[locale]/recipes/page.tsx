@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import { UtensilsCrossed } from "lucide-react";
+import { getSession } from "@/lib/auth-helpers";
 
 interface RecipesPageProps {
   searchParams: Promise<{
@@ -25,10 +26,14 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
   const tNav = await getTranslations("nav");
 
   const params = await searchParams;
+  const session = await getSession();
+  const userId = session?.user?.id;
+
   const filters = {
     query: params.q,
     cuisine: params.cuisine,
     difficulty: params.difficulty,
+    userId,
   };
 
   const recipes = await getRecipes(filters);
@@ -72,7 +77,7 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recipes.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} />
+              <RecipeCard key={recipe.id} recipe={recipe} currentUserId={userId} />
             ))}
           </div>
         )}

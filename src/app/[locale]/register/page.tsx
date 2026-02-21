@@ -36,6 +36,7 @@ export default function RegisterPage() {
         password,
         name: email.split("@")[0], // Use email prefix as default name
       });
+      router.refresh();
       router.push("/recipes");
     } catch (err) {
       setError(t("registerError"));

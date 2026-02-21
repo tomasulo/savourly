@@ -14,7 +14,9 @@
     "edit": "Bearbeiten",
     "loading": "Lädt...",
     "error": "Ein Fehler ist aufgetreten",
-    "noResults": "Keine Ergebnisse gefunden"
+    "noResults": "Keine Ergebnisse gefunden",
+    "saved": "Gespeichert",
+    "unsave": "Entfernen"
   },
   "home": {
     "title": "Willkommen bei Savourly",
@@ -64,7 +66,12 @@
     "optional": "optional",
     "notFound": "Rezept nicht gefunden",
     "notFoundDescription": "Das gesuchte Rezept existiert nicht.",
-    "confirmDelete": "Möchtest du \"{title}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+    "confirmDelete": "Möchtest du \"{title}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "visibility": "Sichtbarkeit",
+    "private": "Privat",
+    "public": "Öffentlich",
+    "privateLabel": "Nur du kannst dieses Rezept sehen",
+    "publicLabel": "Jeder kann dieses Rezept sehen"
   },
   "difficulty": {
     "easy": "Einfach",

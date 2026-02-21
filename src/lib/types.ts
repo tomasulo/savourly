@@ -9,8 +9,21 @@ export interface Recipe {
   cook_time_minutes: number | null;
   servings: number;
   image_url: string | null;
+  is_public: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface RecipeListItem extends Recipe {
+  is_own: boolean;
+  is_favorited: boolean;
+}
+
+export interface Favorite {
+  id: number;
+  user_id: string;
+  recipe_id: number;
+  created_at: string;
 }
 
 export interface Ingredient {

@@ -46,6 +46,8 @@ export async function updateRecipe(
   const cookTime = formData.get("cook_time_minutes") as string | null;
   const servings = formData.get("servings") as string | null;
   const imageUrl = formData.get("image_url") as string | null;
+  const isPublicRaw = formData.get("is_public") as string | null;
+  const isPublic = isPublicRaw === "1" ? 1 : 0;
 
   const ingredientNames = formData.getAll("ingredient_name") as string[];
   const ingredientAmounts = formData.getAll("ingredient_amount") as string[];
@@ -91,6 +93,7 @@ export async function updateRecipe(
               cook_time_minutes = ?,
               servings = ?,
               image_url = ?,
+              is_public = ?,
               updated_at = datetime('now')
           WHERE id = ?`,
     args: [
@@ -102,6 +105,7 @@ export async function updateRecipe(
       cookTime ? parseInt(cookTime, 10) : null,
       servings ? parseInt(servings, 10) : 4,
       imageUrl?.trim() || null,
+      isPublic,
       recipeId,
     ],
   });

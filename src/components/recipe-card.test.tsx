@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { RecipeCard } from './recipe-card'
-import type { Recipe } from '@/lib/types'
+import type { RecipeListItem } from '@/lib/types'
 
 // Mock next-intl
 vi.mock('next-intl', () => ({
@@ -14,6 +14,10 @@ vi.mock('next-intl', () => ({
       },
       time: {
         minutes: 'min',
+      },
+      recipe: {
+        private: 'Private',
+        public: 'Public',
       },
     }
     return (key: string) => translations[namespace]?.[key] || key
@@ -34,9 +38,9 @@ vi.mock('@/i18n/routing', () => ({
   ),
 }))
 
-const mockRecipe: Recipe = {
+const mockRecipe: RecipeListItem = {
   id: 1,
-  user_id: 1,
+  user_id: '1',
   title: 'Classic Carbonara',
   description: 'Authentic Italian pasta dish',
   cuisine: 'Italian',
@@ -45,8 +49,11 @@ const mockRecipe: Recipe = {
   cook_time_minutes: 20,
   servings: 4,
   image_url: '/images/carbonara.jpg',
+  is_public: 1,
   created_at: '2024-01-01',
   updated_at: '2024-01-01',
+  is_own: true,
+  is_favorited: false,
 }
 
 describe('RecipeCard', () => {
@@ -114,5 +121,29 @@ describe('RecipeCard', () => {
 
     rerender(<RecipeCard recipe={{ ...mockRecipe, difficulty: 'hard' }} />)
     expect(screen.getByText('Hard')).toBeInTheDocument()
+  })
+
+  it('shows lock badge for private recipes', () => {
+    const privateRecipe = { ...mockRecipe, is_public: 0 }
+    render(<RecipeCard recipe={privateRecipe} />)
+    expect(screen.getByText('Private')).toBeInTheDocument()
+  })
+
+  it('does not show lock badge for public recipes', () => {
+    render(<RecipeCard recipe={mockRecipe} />)
+    expect(screen.queryByText('Private')).not.toBeInTheDocument()
+  })
+
+  it('shows bookmark icon when is_favorited is true', () => {
+    const favoritedRecipe = { ...mockRecipe, is_favorited: true }
+    const { container } = render(<RecipeCard recipe={favoritedRecipe} />)
+    const bookmarkIcon = container.querySelector('.lucide-bookmark')
+    expect(bookmarkIcon).toBeInTheDocument()
+  })
+
+  it('does not show bookmark icon when not favorited', () => {
+    const { container } = render(<RecipeCard recipe={mockRecipe} />)
+    const bookmarkIcon = container.querySelector('.lucide-bookmark')
+    expect(bookmarkIcon).not.toBeInTheDocument()
   })
 })

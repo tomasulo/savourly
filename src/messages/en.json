@@ -14,7 +14,9 @@
     "edit": "Edit",
     "loading": "Loading...",
     "error": "An error occurred",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "saved": "Saved",
+    "unsave": "Unsave"
   },
   "home": {
     "title": "Welcome to Savourly",
@@ -64,7 +66,12 @@
     "optional": "optional",
     "notFound": "Recipe not found",
     "notFoundDescription": "The recipe you're looking for doesn't exist.",
-    "confirmDelete": "Are you sure you want to delete \"{title}\"? This action cannot be undone."
+    "confirmDelete": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+    "visibility": "Visibility",
+    "private": "Private",
+    "public": "Public",
+    "privateLabel": "Only you can see this recipe",
+    "publicLabel": "Anyone can see this recipe"
   },
   "difficulty": {
     "easy": "Easy",
