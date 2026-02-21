@@ -55,8 +55,7 @@ export default async function LandingPage() {
               <Link href="/recipes/discover">
                 <Button
                   size="lg"
-                  variant="outline"
-                  className="text-lg px-8 py-6 border-2 border-white/70 text-white hover:bg-white/10 hover:border-white transition-all duration-200"
+                  className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
                 >
                   {t("discoverRecipes")}
                 </Button>
@@ -65,8 +64,7 @@ export default async function LandingPage() {
               <Link href="/recipes/new">
                 <Button
                   size="lg"
-                  variant="outline"
-                  className="text-lg px-8 py-6 border-2 border-white/70 text-white hover:bg-white/10 hover:border-white transition-all duration-200"
+                  className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
                 >
                   {t("addFirstRecipe")} →
                 </Button>
@@ -144,7 +142,7 @@ export default async function LandingPage() {
 
             <div className="text-center">
               <Link href="/recipes">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6">
+                <Button size="lg" className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
                   {t("exploreAllRecipes")}
                 </Button>
               </Link>
@@ -177,8 +175,7 @@ export default async function LandingPage() {
             <Link href="/recipes/discover">
               <Button
                 size="lg"
-                variant="outline"
-                className="text-lg px-8 py-6 transition-all duration-200 hover:scale-105"
+                className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
               >
                 {t("discoverRecipes")}
               </Button>
@@ -187,8 +184,7 @@ export default async function LandingPage() {
             <Link href="/recipes/new">
               <Button
                 size="lg"
-                variant="outline"
-                className="text-lg px-8 py-6 transition-all duration-200 hover:scale-105"
+                className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
               >
                 {t("addFirstRecipe")} →
               </Button>
