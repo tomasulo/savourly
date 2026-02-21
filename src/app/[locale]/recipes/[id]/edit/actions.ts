@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 import { getDb } from "@/db/index";
 import { requireAuth } from "@/lib/auth-helpers";
 
@@ -161,16 +162,19 @@ export async function updateRecipe(
     await db.batch(instructionStatements, "write");
   }
 
-  redirect(`/recipes/${recipeId}`);
+  const locale = await getLocale();
+  redirect(`/${locale}/recipes/${recipeId}`);
 }
 
 export async function deleteRecipe(recipeId: number): Promise<void> {
+  const locale = await getLocale();
+
   // Require authentication
   let session;
   try {
     session = await requireAuth();
   } catch {
-    redirect("/login");
+    redirect(`/${locale}/login`);
   }
 
   const db = await getDb();
@@ -182,12 +186,12 @@ export async function deleteRecipe(recipeId: number): Promise<void> {
   });
 
   if (recipeResult.rows.length === 0) {
-    redirect("/recipes");
+    redirect(`/${locale}/recipes`);
   }
 
   const recipeUserId = recipeResult.rows[0][0] as string;
   if (recipeUserId !== session.user.id) {
-    redirect("/recipes");
+    redirect(`/${locale}/recipes`);
   }
 
   await db.execute({
@@ -195,5 +199,5 @@ export async function deleteRecipe(recipeId: number): Promise<void> {
     args: [recipeId],
   });
 
-  redirect("/recipes");
+  redirect(`/${locale}/recipes`);
 }

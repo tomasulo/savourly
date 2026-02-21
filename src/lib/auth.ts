@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { createClient } from "@libsql/client";
+import { LibsqlDialect } from "@libsql/kysely-libsql";
 
 const client = createClient({
   url: process.env.TURSO_DATABASE_URL || "file:savourly.db",
@@ -8,7 +9,8 @@ const client = createClient({
 
 export const auth = betterAuth({
   database: {
-    client,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dialect: new LibsqlDialect({ client: client as any }),
     type: "sqlite",
   },
   emailAndPassword: {

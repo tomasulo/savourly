@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 import { getDb } from "@/db/index";
 import { requireAuth } from "@/lib/auth-helpers";
 
@@ -120,5 +121,6 @@ export async function createRecipe(
     await db.batch(instructionStatements, "write");
   }
 
-  redirect(`/recipes/${recipeId}`);
+  const locale = await getLocale();
+  redirect(`/${locale}/recipes/${recipeId}`);
 }
