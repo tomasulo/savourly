@@ -61,14 +61,6 @@ export default async function LandingPage() {
                 </Button>
               </Link>
 
-              <Link href="/recipes/new">
-                <Button
-                  size="lg"
-                  className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-                >
-                  {t("addFirstRecipe")} →
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
@@ -181,14 +173,6 @@ export default async function LandingPage() {
               </Button>
             </Link>
 
-            <Link href="/recipes/new">
-              <Button
-                size="lg"
-                className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-              >
-                {t("addFirstRecipe")} →
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
