@@ -19,26 +19,72 @@ npm run lint    # lint check
 | Language | TypeScript (strict) |
 | Styling | Tailwind CSS v4 |
 | Components | shadcn/ui |
-| Database | better-sqlite3 (local SQLite) |
+| Database | Turso/LibSQL (SQLite-compatible) |
+| Authentication | BetterAuth (email/password) |
 | i18n | next-intl (EN + DE) |
 
 ## Project Structure
 
 ```
 src/
-├── app/              # App Router pages, layouts, server actions
-├── components/       # Shared UI components
-│   └── ui/           # shadcn/ui primitives (button, card, input, badge, etc.)
-├── db/               # Database schema, connection, queries, seed data
-│   ├── index.ts      # DB connection singleton
-│   ├── schema.ts     # Table definitions & migrations
-│   └── seed.ts       # Seed data for development
-├── lib/              # Utilities, types, helpers
-│   ├── utils.ts      # shadcn/ui cn() utility
-│   └── types.ts      # Shared TypeScript types
-└── messages/         # i18n translation files
-    ├── en.json       # English translations
-    └── de.json       # German translations
+├── app/
+│   ├── api/auth/         # BetterAuth API route
+│   └── [locale]/         # i18n-aware routes (EN + DE)
+│       ├── layout.tsx    # Root layout with navigation
+│       ├── page.tsx      # Landing page
+│       ├── login/        # Login page
+│       ├── register/     # Registration page
+│       └── recipes/
+│           ├── page.tsx          # Recipe list
+│           ├── new/              # Recipe creation form & server actions
+│           ├── [id]/             # Recipe detail, edit, server actions
+│           └── discover/         # Recipe discovery page
+├── components/           # Shared UI components
+│   ├── navigation.tsx        # Top nav with auth state
+│   ├── recipe-card.tsx       # Recipe card with image, badges
+│   ├── bookmark-button.tsx   # Bookmark toggle (authenticated)
+│   ├── language-switcher.tsx # EN/DE switcher
+│   └── ui/               # shadcn/ui primitives (button, card, input, badge, etc.)
+├── db/                   # Database layer
+│   ├── index.ts          # DB connection singleton (getDb())
+│   ├── schema.ts         # Table definitions (recipes, auth tables)
+│   ├── queries.ts        # Query functions
+│   └── seed.ts           # Sample recipes for development
+├── lib/                  # Utilities, types, auth
+│   ├── auth.ts           # BetterAuth server config
+│   ├── auth-client.ts    # Client hooks (useSession, signIn, signOut)
+│   ├── auth-helpers.ts   # Server helpers (getSession, requireAuth)
+│   ├── types.ts          # Shared TypeScript types
+│   └── utils.ts          # shadcn/ui cn() utility
+├── messages/             # i18n translation files
+│   ├── en.json           # English
+│   └── de.json           # German
+└── test/
+    ├── setup.ts          # Vitest setup
+    └── e2e/              # Playwright E2E tests
+```
+
+## Environment Variables
+
+Copy `.env.example` to `.env.local` and configure:
+
+```bash
+# Local development
+TURSO_DATABASE_URL=file:savourly.db
+BETTER_AUTH_SECRET=dev-secret-change-in-production
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
+```
+
+For production (Vercel), use a hosted Turso database and set all vars in the Vercel dashboard.
+
+## Testing
+
+```bash
+npm run test              # Unit tests (watch mode)
+npm run test -- --run     # Unit tests (single run)
+npm run test:coverage     # Coverage report
+npm run test:e2e          # Playwright E2E tests
 ```
 
 ## Development Workflow

@@ -4,7 +4,7 @@
 > Read it fully before starting any task.
 
 ## Project Overview
-Personal recipe tracker. Local-first (auth & deployment planned for later).
+Personal recipe tracker with authentication and Vercel deployment.
 This repo is **100% AI-developed** — all coding is done by AI agents. Optimize for clarity, consistency, and agent-parseable structure.
 
 ## Tech Stack
@@ -67,17 +67,32 @@ Components install to `src/components/ui/`. Available: button, card, input, badg
 savourly/
 ├── src/
 │   ├── app/              # App Router pages & layouts
-│   │   └── recipes/
-│   │       ├── new/      # Recipe creation (page, form, actions)
-│   │       └── [id]/     # Recipe detail (page, recipe-detail component)
+│   │   ├── api/auth/     # BetterAuth API route ([...all]/route.ts)
+│   │   └── [locale]/     # i18n-aware routes (EN + DE)
+│   │       ├── layout.tsx
+│   │       ├── page.tsx  # Landing page
+│   │       ├── login/    # Login page
+│   │       ├── register/ # Registration page
+│   │       └── recipes/
+│   │           ├── page.tsx        # Recipe list
+│   │           ├── new/            # Recipe creation (page, form, actions)
+│   │           ├── [id]/           # Recipe detail, edit, server actions
+│   │           └── discover/       # Recipe discovery page
 │   ├── components/       # Shared UI components
+│   │   ├── navigation.tsx          # Top nav with auth state
+│   │   ├── recipe-card.tsx         # Recipe card with image, badges
+│   │   ├── bookmark-button.tsx     # Bookmark toggle (authenticated)
+│   │   ├── language-switcher.tsx   # EN/DE switcher
 │   │   └── ui/           # shadcn/ui primitives (DO NOT edit these manually)
 │   ├── db/               # SQLite schema, connection, queries
 │   │   ├── index.ts      # DB connection singleton (getDb())
-│   │   ├── schema.ts     # CREATE TABLE statements
-│   │   ├── seed.ts       # 6 sample recipes for development
+│   │   ├── schema.ts     # CREATE TABLE statements (recipes + BetterAuth tables)
+│   │   ├── seed.ts       # Sample recipes for development
 │   │   └── queries.ts    # Query functions (getRecipeWithDetails, getCookingLogs)
-│   ├── lib/              # Utilities & shared types
+│   ├── lib/              # Utilities, types & auth
+│   │   ├── auth.ts       # BetterAuth server config
+│   │   ├── auth-client.ts # Client hooks (useSession, signIn, signUp, signOut)
+│   │   ├── auth-helpers.ts # Server helpers (getSession, requireAuth)
 │   │   ├── utils.ts      # cn() utility from shadcn
 │   │   └── types.ts      # Recipe, Ingredient, Instruction, CookingLog, RecipeWithDetails
 │   ├── messages/         # i18n JSON files
@@ -88,6 +103,7 @@ savourly/
 │       └── e2e/          # Playwright E2E tests
 ├── CLAUDE.md             # This file — agent conventions
 ├── README.md             # Project overview
+├── .env.example          # Environment variable template
 ├── vitest.config.ts      # Vitest configuration
 ├── playwright.config.ts  # Playwright configuration
 ├── .claude/
@@ -229,5 +245,8 @@ For each issue:
 8. Do NOT merge — PM reviews and merges
 ```
 
-## Future Plans
-- **Deployment:** Planned for Vercel with Turso hosted database
+## Deployment
+- **Platform:** Vercel
+- **Database:** Turso hosted (libsql://...) — configure via `TURSO_DATABASE_URL` + `TURSO_AUTH_TOKEN`
+- **Auth secret:** Generate with `openssl rand -base64 32`, set as `BETTER_AUTH_SECRET`
+- **Auth URL:** Set `BETTER_AUTH_URL` and `NEXT_PUBLIC_BETTER_AUTH_URL` to the Vercel domain
