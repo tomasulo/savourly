@@ -2,7 +2,8 @@
   "nav": {
     "title": "Savourly",
     "recipes": "Recipes",
-    "addRecipe": "Add Recipe"
+    "addRecipe": "Add Recipe",
+    "discover": "Discover"
   },
   "common": {
     "search": "Search...",
@@ -14,13 +15,17 @@
     "edit": "Edit",
     "loading": "Loading...",
     "error": "An error occurred",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "saved": "Saved",
+    "unsave": "Unsave"
   },
   "home": {
     "title": "Welcome to Savourly",
     "subtitle": "Your personal recipe collection",
     "getStarted": "Get Started",
     "browseRecipes": "Browse Recipes",
+    "myRecipes": "My Recipes",
+    "discoverRecipes": "Discover Recipes",
     "addFirstRecipe": "Add Your First Recipe",
     "whySavourly": "Why Savourly?",
     "organizeTitle": "Organize",
@@ -64,7 +69,12 @@
     "optional": "optional",
     "notFound": "Recipe not found",
     "notFoundDescription": "The recipe you're looking for doesn't exist.",
-    "confirmDelete": "Are you sure you want to delete \"{title}\"? This action cannot be undone."
+    "confirmDelete": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+    "visibility": "Visibility",
+    "private": "Private",
+    "public": "Public",
+    "privateLabel": "Only you can see this recipe",
+    "publicLabel": "Anyone can see this recipe"
   },
   "difficulty": {
     "easy": "Easy",
@@ -84,6 +94,14 @@
     "noRecipesDescription": "Start building your collection by adding your first recipe.",
     "noCookingLogs": "No cooking history yet",
     "noCookingLogsDescription": "Cook this recipe and log your experience!"
+  },
+  "discover": {
+    "title": "Discover",
+    "subtitle": "Browse public recipes from other cooks",
+    "saveToCollection": "Save",
+    "savedToCollection": "Saved",
+    "noRecipes": "No public recipes found",
+    "noRecipesDescription": "There are no public recipes from other cooks yet."
   },
   "form": {
     "required": "This field is required",

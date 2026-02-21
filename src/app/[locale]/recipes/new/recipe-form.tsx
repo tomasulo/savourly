@@ -180,6 +180,19 @@ export default function RecipeForm() {
               defaultValue={4}
             />
           </div>
+
+          <div className="mt-4 w-48 space-y-2">
+            <Label>{t("visibility")}</Label>
+            <Select name="is_public" defaultValue="0">
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">{t("private")}</SelectItem>
+                <SelectItem value="1">{t("public")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 

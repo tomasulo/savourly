@@ -8,14 +8,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { RecipeWithDetails, CookingLog } from "@/lib/types";
-import { Clock, Flame, Timer, Users, BarChart3, Globe, Star, UtensilsCrossed } from "lucide-react";
+import { Clock, Flame, Timer, Users, BarChart3, Globe, Star, UtensilsCrossed, Bookmark } from "lucide-react";
+import { addFavoriteAction, removeFavoriteAction } from "./actions";
 
 interface RecipeDetailProps {
   recipe: RecipeWithDetails;
   cookingLogs: CookingLog[];
+  currentUserId: string | null;
+  isFavorited: boolean;
 }
 
-export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
+export function RecipeDetail({ recipe, cookingLogs, currentUserId, isFavorited }: RecipeDetailProps) {
   const t = useTranslations("recipe");
   const tDiff = useTranslations("difficulty");
   const tTime = useTranslations("time");
@@ -24,6 +27,14 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(
     new Set()
   );
+  const [favorited, setFavorited] = useState(isFavorited);
+  const [bookmarkPending, setBookmarkPending] = useState(false);
+
+  const isOwner = currentUserId !== null && currentUserId === recipe.user_id;
+  const canBookmark =
+    currentUserId !== null &&
+    !isOwner &&
+    recipe.is_public === 1;
 
   const servingMultiplier = servings / recipe.servings;
 
@@ -45,10 +56,27 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
   const formatAmount = (amount: number | null): string => {
     if (amount === null) return "";
     const adjusted = amount * servingMultiplier;
-    // Round to 2 decimal places and remove trailing zeros
     return adjusted % 1 === 0
       ? adjusted.toString()
       : adjusted.toFixed(2).replace(/\.?0+$/, "");
+  };
+
+  const handleBookmarkToggle = async () => {
+    if (bookmarkPending) return;
+    setBookmarkPending(true);
+    const prev = favorited;
+    setFavorited(!prev);
+    try {
+      if (prev) {
+        await removeFavoriteAction(recipe.id);
+      } else {
+        await addFavoriteAction(recipe.id);
+      }
+    } catch {
+      setFavorited(prev);
+    } finally {
+      setBookmarkPending(false);
+    }
   };
 
   const totalTime =
@@ -97,13 +125,29 @@ export function RecipeDetail({ recipe, cookingLogs }: RecipeDetailProps) {
 
       {/* Main Content */}
       <div className="mx-auto max-w-4xl px-4 py-8">
-        {/* Edit Button */}
-        <div className="mb-6 flex justify-end">
-          <Button asChild>
-            <Link href={`/recipes/${recipe.id}/edit`}>
-              {tCommon("edit")}
-            </Link>
-          </Button>
+        {/* Action Buttons */}
+        <div className="mb-6 flex justify-end gap-2">
+          {canBookmark && (
+            <Button
+              variant="outline"
+              onClick={handleBookmarkToggle}
+              disabled={bookmarkPending}
+              className="flex items-center gap-2"
+            >
+              <Bookmark
+                size={16}
+                className={favorited ? "fill-primary text-primary" : ""}
+              />
+              {favorited ? tCommon("unsave") : tCommon("saved")}
+            </Button>
+          )}
+          {isOwner && (
+            <Button asChild>
+              <Link href={`/recipes/${recipe.id}/edit`}>
+                {tCommon("edit")}
+              </Link>
+            </Button>
+          )}
         </div>
 
         {/* Quick Facts Bar */}

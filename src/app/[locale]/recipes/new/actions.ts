@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 import { getDb } from "@/db/index";
 import { requireAuth } from "@/lib/auth-helpers";
 
@@ -28,6 +29,8 @@ export async function createRecipe(
   const cookTime = formData.get("cook_time_minutes") as string | null;
   const servings = formData.get("servings") as string | null;
   const imageUrl = formData.get("image_url") as string | null;
+  const isPublicRaw = formData.get("is_public") as string | null;
+  const isPublic = isPublicRaw === "1" ? 1 : 0;
 
   const ingredientNames = formData.getAll("ingredient_name") as string[];
   const ingredientAmounts = formData.getAll("ingredient_amount") as string[];
@@ -63,8 +66,8 @@ export async function createRecipe(
 
   // Insert recipe with user_id from session
   const recipeResult = await db.execute({
-    sql: `INSERT INTO recipes (user_id, title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    sql: `INSERT INTO recipes (user_id, title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url, is_public)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       session.user.id,
       title.trim(),
@@ -75,6 +78,7 @@ export async function createRecipe(
       cookTime ? parseInt(cookTime, 10) : null,
       servings ? parseInt(servings, 10) : 4,
       imageUrl?.trim() || null,
+      isPublic,
     ],
   });
 
@@ -117,5 +121,6 @@ export async function createRecipe(
     await db.batch(instructionStatements, "write");
   }
 
-  redirect(`/recipes/${recipeId}`);
+  const locale = await getLocale();
+  redirect(`/${locale}/recipes/${recipeId}`);
 }

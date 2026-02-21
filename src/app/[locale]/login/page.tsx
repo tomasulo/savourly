@@ -28,6 +28,7 @@ export default function LoginPage() {
         email,
         password,
       });
+      router.refresh();
       router.push("/recipes");
     } catch (err) {
       setError(t("loginError"));

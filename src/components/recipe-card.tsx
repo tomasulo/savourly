@@ -5,16 +5,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import type { Recipe } from "@/lib/types";
-import { UtensilsCrossed, Globe, Clock } from "lucide-react";
+import type { RecipeListItem } from "@/lib/types";
+import { UtensilsCrossed, Globe, Clock, Lock, Bookmark } from "lucide-react";
 
 interface RecipeCardProps {
-  recipe: Recipe;
+  recipe: RecipeListItem;
+  currentUserId?: string | null;
 }
 
 export function RecipeCard({ recipe }: RecipeCardProps) {
   const tDiff = useTranslations("difficulty");
   const tTime = useTranslations("time");
+  const tRecipe = useTranslations("recipe");
 
   const totalTime =
     (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
@@ -44,12 +46,28 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
               {/* Gradient overlay for better text contrast */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
+              {/* Private lock badge (top-left) */}
+              {recipe.is_public === 0 && (
+                <div className="absolute top-3 left-3">
+                  <Badge className="bg-black/70 backdrop-blur-sm text-white border-0 shadow-lg flex items-center gap-1">
+                    <Lock size={12} /> {tRecipe("private")}
+                  </Badge>
+                </div>
+              )}
+
               {/* Cuisine badge floating on image */}
               {recipe.cuisine && (
                 <div className="absolute top-3 right-3">
                   <Badge className="bg-white/90 backdrop-blur-sm text-foreground border-0 shadow-lg flex items-center gap-1">
                     <Globe size={14} /> {recipe.cuisine}
                   </Badge>
+                </div>
+              )}
+
+              {/* Bookmark icon (bottom-right) when favorited */}
+              {recipe.is_favorited && (
+                <div className="absolute bottom-3 right-3">
+                  <Bookmark size={20} className="text-primary fill-primary drop-shadow" />
                 </div>
               )}
             </>
@@ -59,6 +77,20 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
                 size={48}
                 className="text-muted-foreground group-hover:scale-110 transition-transform duration-300"
               />
+              {/* Private lock badge for no-image cards */}
+              {recipe.is_public === 0 && (
+                <div className="absolute top-3 left-3">
+                  <Badge className="bg-black/70 backdrop-blur-sm text-white border-0 shadow-lg flex items-center gap-1">
+                    <Lock size={12} /> {tRecipe("private")}
+                  </Badge>
+                </div>
+              )}
+              {/* Bookmark icon for no-image cards */}
+              {recipe.is_favorited && (
+                <div className="absolute bottom-3 right-3">
+                  <Bookmark size={20} className="text-primary fill-primary drop-shadow" />
+                </div>
+              )}
             </div>
           )}
         </div>
