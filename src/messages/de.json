@@ -2,7 +2,8 @@
   "nav": {
     "title": "Savourly",
     "recipes": "Rezepte",
-    "addRecipe": "Rezept hinzufügen"
+    "addRecipe": "Rezept hinzufügen",
+    "discover": "Entdecken"
   },
   "common": {
     "search": "Suchen...",
@@ -91,6 +92,14 @@
     "noRecipesDescription": "Beginne deine Sammlung, indem du dein erstes Rezept hinzufügst.",
     "noCookingLogs": "Noch keine Kochhistorie",
     "noCookingLogsDescription": "Koche dieses Rezept und dokumentiere deine Erfahrung!"
+  },
+  "discover": {
+    "title": "Entdecken",
+    "subtitle": "Öffentliche Rezepte anderer Köche durchsuchen",
+    "saveToCollection": "Speichern",
+    "savedToCollection": "Gespeichert",
+    "noRecipes": "Keine öffentlichen Rezepte gefunden",
+    "noRecipesDescription": "Es gibt noch keine öffentlichen Rezepte anderer Köche."
   },
   "form": {
     "required": "Dieses Feld ist erforderlich",

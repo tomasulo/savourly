@@ -30,6 +30,7 @@ export function Navigation() {
   const navLinks = [
     { href: "/", label: t("title") },
     { href: "/recipes", label: t("recipes") },
+    ...(session?.user ? [{ href: "/recipes/discover", label: t("discover") }] : []),
     { href: "/recipes/new", label: t("addRecipe") },
   ];
 

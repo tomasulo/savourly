@@ -2,7 +2,8 @@
   "nav": {
     "title": "Savourly",
     "recipes": "Recipes",
-    "addRecipe": "Add Recipe"
+    "addRecipe": "Add Recipe",
+    "discover": "Discover"
   },
   "common": {
     "search": "Search...",
@@ -91,6 +92,14 @@
     "noRecipesDescription": "Start building your collection by adding your first recipe.",
     "noCookingLogs": "No cooking history yet",
     "noCookingLogsDescription": "Cook this recipe and log your experience!"
+  },
+  "discover": {
+    "title": "Discover",
+    "subtitle": "Browse public recipes from other cooks",
+    "saveToCollection": "Save",
+    "savedToCollection": "Saved",
+    "noRecipes": "No public recipes found",
+    "noRecipesDescription": "There are no public recipes from other cooks yet."
   },
   "form": {
     "required": "This field is required",

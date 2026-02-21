@@ -21,6 +21,7 @@ export async function addFavoriteAction(recipeId: number): Promise<void> {
 
   await addFavorite(userId, recipeId);
   revalidatePath("/recipes");
+  revalidatePath("/recipes/discover");
 }
 
 export async function removeFavoriteAction(recipeId: number): Promise<void> {
@@ -29,4 +30,5 @@ export async function removeFavoriteAction(recipeId: number): Promise<void> {
 
   await removeFavorite(userId, recipeId);
   revalidatePath("/recipes");
+  revalidatePath("/recipes/discover");
 }
