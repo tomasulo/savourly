@@ -43,7 +43,7 @@ const mockRecipe: RecipeListItem = {
   user_id: '1',
   title: 'Classic Carbonara',
   description: 'Authentic Italian pasta dish',
-  cuisine: 'Italian',
+  tags: ['dinner'],
   difficulty: 'medium',
   prep_time_minutes: 10,
   cook_time_minutes: 20,
@@ -78,13 +78,11 @@ describe('RecipeCard', () => {
     expect(screen.getByText('Medium')).toBeInTheDocument()
   })
 
-  it('renders cuisine badge when provided', () => {
+  it('renders tag badge when tags provided', () => {
     const { container } = render(<RecipeCard recipe={mockRecipe} />)
-    // Find the badge with Italian text (not the description)
-    const badges = screen.getAllByText('Italian')
-    expect(badges.length).toBeGreaterThan(0)
-    // Verify there's an SVG icon (Globe icon) near the cuisine badge
-    const icon = container.querySelector('.lucide-globe')
+    expect(screen.getByText('dinner')).toBeInTheDocument()
+    // Verify there's a Tag icon near the tag badge
+    const icon = container.querySelector('.lucide-tag')
     expect(icon).toBeInTheDocument()
   })
 

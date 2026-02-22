@@ -19,7 +19,6 @@ test.describe('Recipe Creation Flow', () => {
     await page.fill('#image_url', 'https://example.com/carbonara.jpg')
 
     // Fill metadata
-    await page.fill('#cuisine', 'Italian')
     await page.fill('#prep_time_minutes', '10')
     await page.fill('#cook_time_minutes', '20')
     await page.fill('#servings', '4')

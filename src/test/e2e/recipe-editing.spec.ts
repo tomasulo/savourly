@@ -10,7 +10,6 @@ test.describe('Recipe Editing Flow', () => {
     // Fill basic info
     await page.fill('#title', 'Recipe to Edit')
     await page.fill('#description', 'Original description')
-    await page.fill('#cuisine', 'Italian')
     await page.fill('#prep_time_minutes', '10')
     await page.fill('#cook_time_minutes', '20')
     await page.fill('#servings', '4')
@@ -52,9 +51,6 @@ test.describe('Recipe Editing Flow', () => {
 
     // Verify description is pre-filled
     await expect(page.locator('#description')).toHaveValue('Original description')
-
-    // Verify cuisine is pre-filled
-    await expect(page.locator('#cuisine')).toHaveValue('Italian')
 
     // Verify times are pre-filled
     await expect(page.locator('#prep_time_minutes')).toHaveValue('10')

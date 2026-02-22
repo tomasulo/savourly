@@ -41,7 +41,6 @@ export async function updateRecipe(
 
   const title = formData.get("title") as string | null;
   const description = formData.get("description") as string | null;
-  const cuisine = formData.get("cuisine") as string | null;
   const difficulty = formData.get("difficulty") as string | null;
   const prepTime = formData.get("prep_time_minutes") as string | null;
   const cookTime = formData.get("cook_time_minutes") as string | null;
@@ -54,6 +53,7 @@ export async function updateRecipe(
   const ingredientAmounts = formData.getAll("ingredient_amount") as string[];
   const ingredientUnits = formData.getAll("ingredient_unit") as string[];
 
+  const tags = formData.getAll("tags") as string[];
   const instructionContents = formData.getAll("instruction") as string[];
 
   // Server-side validation
@@ -88,7 +88,6 @@ export async function updateRecipe(
     sql: `UPDATE recipes
           SET title = ?,
               description = ?,
-              cuisine = ?,
               difficulty = ?,
               prep_time_minutes = ?,
               cook_time_minutes = ?,
@@ -100,7 +99,6 @@ export async function updateRecipe(
     args: [
       title.trim(),
       description?.trim() || null,
-      cuisine?.trim() || null,
       difficulty || "medium",
       prepTime ? parseInt(prepTime, 10) : null,
       cookTime ? parseInt(cookTime, 10) : null,
@@ -111,7 +109,7 @@ export async function updateRecipe(
     ],
   });
 
-  // Delete existing ingredients and instructions
+  // Delete existing ingredients, instructions, and tags
   statements.push({
     sql: "DELETE FROM ingredients WHERE recipe_id = ?",
     args: [recipeId],
@@ -119,6 +117,11 @@ export async function updateRecipe(
 
   statements.push({
     sql: "DELETE FROM instructions WHERE recipe_id = ?",
+    args: [recipeId],
+  });
+
+  statements.push({
+    sql: "DELETE FROM recipe_tags WHERE recipe_id = ?",
     args: [recipeId],
   });
 
@@ -154,12 +157,25 @@ export async function updateRecipe(
     stepNumber++;
   }
 
+  // Prepare tag statements
+  const tagStatements: { sql: string; args: (string | number)[] }[] = [];
+  for (const tag of tags) {
+    if (tag.trim().length === 0) continue;
+    tagStatements.push({
+      sql: `INSERT INTO recipe_tags (recipe_id, tag) VALUES (?, ?)`,
+      args: [recipeId, tag.trim()],
+    });
+  }
+
   // Execute inserts in batch
   if (ingredientStatements.length > 0) {
     await db.batch(ingredientStatements, "write");
   }
   if (instructionStatements.length > 0) {
     await db.batch(instructionStatements, "write");
+  }
+  if (tagStatements.length > 0) {
+    await db.batch(tagStatements, "write");
   }
 
   const locale = await getLocale();

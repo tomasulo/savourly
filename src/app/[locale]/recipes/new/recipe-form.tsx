@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createRecipe } from "./actions";
+import { TAGS } from "@/lib/tags";
+import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 
 interface IngredientRow {
@@ -44,6 +46,14 @@ export default function RecipeForm() {
 
   const createInstructionRow = (): InstructionRow => {
     return { id: nextInstructionId.current++, content: "" };
+  };
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
   };
 
   const [ingredients, setIngredients] = useState<IngredientRow[]>([
@@ -123,16 +133,26 @@ export default function RecipeForm() {
           <CardTitle className="text-lg">{t("recipeDetails")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="space-y-2">
-              <Label htmlFor="cuisine">{t("cuisine")}</Label>
-              <Input
-                id="cuisine"
-                name="cuisine"
-                placeholder={t("cuisine")}
-              />
+          <div className="mb-4 space-y-2">
+            <Label>{t("tags")}</Label>
+            <div className="flex flex-wrap gap-2">
+              {TAGS.map((tag) => (
+                <Badge
+                  key={tag}
+                  variant={selectedTags.includes(tag) ? "default" : "outline"}
+                  className="cursor-pointer hover:bg-primary/10"
+                  onClick={() => toggleTag(tag)}
+                >
+                  {tag}
+                </Badge>
+              ))}
             </div>
+            {selectedTags.map((tag) => (
+              <input key={tag} type="hidden" name="tags" value={tag} />
+            ))}
+          </div>
 
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <div className="space-y-2">
               <Label>{t("difficulty")}</Label>
               <Select name="difficulty" defaultValue="medium">

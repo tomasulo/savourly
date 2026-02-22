@@ -3,7 +3,7 @@ import type { Client } from "@libsql/client";
 interface SeedRecipe {
   title: string;
   description: string;
-  cuisine: string;
+  tags: string[];
   difficulty: "easy" | "medium" | "hard";
   prep_time_minutes: number;
   cook_time_minutes: number;
@@ -18,7 +18,7 @@ const recipes: SeedRecipe[] = [
     title: "Wiener Schnitzel",
     description:
       "Zart geklopftes Kalbsfleisch in goldener Panade – der Klassiker der österreichischen und deutschen Küche.",
-    cuisine: "Österreichisch",
+    tags: ["dinner"],
     difficulty: "medium",
     prep_time_minutes: 20,
     cook_time_minutes: 15,
@@ -48,7 +48,7 @@ const recipes: SeedRecipe[] = [
     title: "Sauerbraten",
     description:
       "Marinierter Rinderbraten aus dem Rheinland – mehrere Tage in Essig-Rotwein-Marinade eingelegt und dann langsam geschmort.",
-    cuisine: "Deutsch",
+    tags: ["dinner"],
     difficulty: "hard",
     prep_time_minutes: 30,
     cook_time_minutes: 180,
@@ -84,7 +84,7 @@ const recipes: SeedRecipe[] = [
     title: "Käsespätzle",
     description:
       "Hausgemachte Spätzle mit geschmolzenem Bergkäse und knusprigen Röstzwiebeln – der Liebling aus dem Schwabenland.",
-    cuisine: "Schwäbisch",
+    tags: ["dinner", "lunch"],
     difficulty: "medium",
     prep_time_minutes: 20,
     cook_time_minutes: 25,
@@ -116,7 +116,7 @@ const recipes: SeedRecipe[] = [
     title: "Rinderrouladen",
     description:
       "Dünne Rindfleischstreifen, gefüllt mit Senf, Speck und Gewürzgurke, langsam in kräftiger Soße geschmort.",
-    cuisine: "Deutsch",
+    tags: ["dinner"],
     difficulty: "hard",
     prep_time_minutes: 30,
     cook_time_minutes: 120,
@@ -151,7 +151,7 @@ const recipes: SeedRecipe[] = [
     title: "Kartoffelsuppe",
     description:
       "Deftige, cremige Kartoffelsuppe mit Gemüse und Majoran – einfache deutsche Hausmannskost vom Feinsten.",
-    cuisine: "Deutsch",
+    tags: ["soup", "lunch"],
     difficulty: "easy",
     prep_time_minutes: 15,
     cook_time_minutes: 35,
@@ -185,7 +185,7 @@ const recipes: SeedRecipe[] = [
     title: "Flammkuchen",
     description:
       "Knuspriger Elsässer Flammkuchen mit Crème fraîche, Speck und Zwiebeln – in 35 Minuten auf dem Tisch.",
-    cuisine: "Elsässisch",
+    tags: ["dinner", "snack"],
     difficulty: "easy",
     prep_time_minutes: 20,
     cook_time_minutes: 15,
@@ -217,7 +217,7 @@ const recipes: SeedRecipe[] = [
     title: "Erbsensuppe mit Würstchen",
     description:
       "Herzhafter Eintopf mit getrockneten Erbsen, Räucherspeck und Würstchen – ein klassisches deutsches Wintergericht.",
-    cuisine: "Deutsch",
+    tags: ["soup", "dinner"],
     difficulty: "easy",
     prep_time_minutes: 10,
     cook_time_minutes: 75,
@@ -251,7 +251,7 @@ const recipes: SeedRecipe[] = [
     title: "Pfannkuchen",
     description:
       "Dünne, zarte Pfannkuchen nach Omas Rezept – herrlich mit Marmelade, Zucker und Zimt oder herzhaft gefüllt.",
-    cuisine: "Deutsch",
+    tags: ["breakfast", "dessert"],
     difficulty: "easy",
     prep_time_minutes: 10,
     cook_time_minutes: 20,
@@ -281,7 +281,7 @@ const recipes: SeedRecipe[] = [
     title: "Apfelstrudel",
     description:
       "Knuspriger Strudel mit gewürzten Äpfeln und Rosinen im hauchdünnen Strudelteig – der Klassiker aus Wien.",
-    cuisine: "Österreichisch",
+    tags: ["dessert", "baking"],
     difficulty: "medium",
     prep_time_minutes: 45,
     cook_time_minutes: 35,
@@ -315,7 +315,7 @@ const recipes: SeedRecipe[] = [
     title: "Schwarzwälder Kirschtorte",
     description:
       "Saftiger Schokoladenbiskuit, luftige Schlagsahne und Kirschen mit Kirschwasser – die wohl berühmteste Torte Deutschlands.",
-    cuisine: "Deutsch",
+    tags: ["dessert", "baking"],
     difficulty: "hard",
     prep_time_minutes: 60,
     cook_time_minutes: 30,
@@ -358,12 +358,11 @@ export async function seedDatabase(db: Client): Promise<void> {
   // Insert recipes one by one since we need lastInsertRowid for each
   for (const recipe of recipes) {
     const result = await db.execute({
-      sql: `INSERT INTO recipes (title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      sql: `INSERT INTO recipes (title, description, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
       args: [
         recipe.title,
         recipe.description,
-        recipe.cuisine,
         recipe.difficulty,
         recipe.prep_time_minutes,
         recipe.cook_time_minutes,
@@ -372,6 +371,16 @@ export async function seedDatabase(db: Client): Promise<void> {
       ],
     });
     const recipeId = result.lastInsertRowid;
+
+    // Batch insert tags
+    const tagStatements = recipe.tags.map((tag) => ({
+      sql: `INSERT INTO recipe_tags (recipe_id, tag) VALUES (?, ?)`,
+      args: [recipeId as number | bigint, tag] as (string | number | bigint)[],
+    }));
+
+    if (tagStatements.length > 0) {
+      await db.batch(tagStatements, "write");
+    }
 
     // Batch insert ingredients
     const ingredientStatements = recipe.ingredients.map((ing, index) => ({

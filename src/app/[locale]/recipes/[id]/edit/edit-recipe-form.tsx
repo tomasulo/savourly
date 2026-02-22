@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/select";
 import { updateRecipe, deleteRecipe } from "./actions";
 import type { RecipeWithDetails } from "@/lib/types";
+import { TAGS } from "@/lib/tags";
+import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 
 interface IngredientRow {
@@ -44,6 +46,13 @@ export default function EditRecipeForm({ recipe }: EditRecipeFormProps) {
   const updateRecipeWithId = updateRecipe.bind(null, recipe.id);
   const [state, formAction, isPending] = useActionState(updateRecipeWithId, {});
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>(recipe.tags);
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
 
   const nextIngredientId = useRef(
     Math.max(...recipe.ingredients.map((i) => i.id), 0) + 1
@@ -172,17 +181,26 @@ export default function EditRecipeForm({ recipe }: EditRecipeFormProps) {
             <CardTitle className="text-lg">{t("recipeDetails")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              <div className="space-y-2">
-                <Label htmlFor="cuisine">{t("cuisine")}</Label>
-                <Input
-                  id="cuisine"
-                  name="cuisine"
-                  placeholder={t("cuisine")}
-                  defaultValue={recipe.cuisine || ""}
-                />
+            <div className="mb-4 space-y-2">
+              <Label>{t("tags")}</Label>
+              <div className="flex flex-wrap gap-2">
+                {TAGS.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant={selectedTags.includes(tag) ? "default" : "outline"}
+                    className="cursor-pointer hover:bg-primary/10"
+                    onClick={() => toggleTag(tag)}
+                  >
+                    {tag}
+                  </Badge>
+                ))}
               </div>
+              {selectedTags.map((tag) => (
+                <input key={tag} type="hidden" name="tags" value={tag} />
+              ))}
+            </div>
 
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               <div className="space-y-2">
                 <Label>{t("difficulty")}</Label>
                 <Select name="difficulty" defaultValue={recipe.difficulty}>

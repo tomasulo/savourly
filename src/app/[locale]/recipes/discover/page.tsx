@@ -1,4 +1,4 @@
-import { getDiscoverRecipes, getAllCuisines } from "@/db/queries";
+import { getDiscoverRecipes, getAllTags } from "@/db/queries";
 import { RecipeCard } from "@/components/recipe-card";
 import { BookmarkButton } from "@/components/bookmark-button";
 import { SearchBar } from "../search-bar";
@@ -10,7 +10,7 @@ import { Compass } from "lucide-react";
 interface DiscoverPageProps {
   searchParams: Promise<{
     q?: string;
-    cuisine?: string;
+    tag?: string;
     difficulty?: string;
   }>;
 }
@@ -28,10 +28,10 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
 
   const recipes = await getDiscoverRecipes(userId, {
     query: params.q,
-    cuisine: params.cuisine,
+    tag: params.tag,
     difficulty: params.difficulty,
   });
-  const allCuisines = await getAllCuisines();
+  const allTags = await getAllTags();
 
   return (
     <div className="min-h-screen bg-background">
@@ -44,7 +44,7 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
           </div>
 
           <SearchBar />
-          <FilterChips cuisines={allCuisines} />
+          <FilterChips tags={allTags} />
         </div>
       </div>
 

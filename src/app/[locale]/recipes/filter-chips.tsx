@@ -7,10 +7,10 @@ import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 
 interface FilterChipsProps {
-  cuisines: string[];
+  tags: string[];
 }
 
-export function FilterChips({ cuisines }: FilterChipsProps) {
+export function FilterChips({ tags }: FilterChipsProps) {
   const t = useTranslations("recipe");
   const tDiff = useTranslations("difficulty");
   const tCommon = useTranslations("common");
@@ -18,7 +18,7 @@ export function FilterChips({ cuisines }: FilterChipsProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const currentCuisine = searchParams.get("cuisine");
+  const currentTag = searchParams.get("tag");
   const currentDifficulty = searchParams.get("difficulty");
 
   const difficulties = ["easy", "medium", "hard"];
@@ -35,29 +35,29 @@ export function FilterChips({ cuisines }: FilterChipsProps) {
     router.replace(`${pathname}?${params.toString()}`);
   };
 
-  const hasFilters = currentCuisine || currentDifficulty;
+  const hasFilters = currentTag || currentDifficulty;
 
   const clearFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
-    params.delete("cuisine");
+    params.delete("tag");
     params.delete("difficulty");
     router.replace(`${pathname}?${params.toString()}`);
   };
 
   return (
     <div className="flex flex-wrap gap-2">
-      {/* Cuisine Filters */}
-      {cuisines.length > 0 && (
+      {/* Tag Filters */}
+      {tags.length > 0 && (
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-sm text-muted-foreground">{t("cuisine")}:</span>
-          {cuisines.map((cuisine) => (
+          <span className="text-sm text-muted-foreground">{t("tags")}:</span>
+          {tags.map((tag) => (
             <Badge
-              key={cuisine}
-              variant={currentCuisine === cuisine ? "default" : "outline"}
+              key={tag}
+              variant={currentTag === tag ? "default" : "outline"}
               className="cursor-pointer hover:bg-primary/10"
-              onClick={() => toggleFilter("cuisine", cuisine)}
+              onClick={() => toggleFilter("tag", tag)}
             >
-              {cuisine}
+              {tag}
             </Badge>
           ))}
         </div>
