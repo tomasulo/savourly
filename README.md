@@ -87,22 +87,6 @@ npm run test:coverage     # Coverage report
 npm run test:e2e          # Playwright E2E tests
 ```
 
-## Development Workflow
-
-This repo is developed entirely by AI agents orchestrated by a PM agent. See `CLAUDE.md` for full conventions.
-
-### Agent Roles
-- **PM (Opus):** Creates issues, plans sprints, orchestrates workflow, merges PRs
-- **Coding Agent (Sonnet):** Implements features on branches, opens PRs
-- **QA Agent (Sonnet):** Reviews PRs for correctness, quality, design compliance
-
-### Issue Lifecycle
-```
-PM creates issue → Coding Agent implements → PR created
-    → QA Agent reviews → Approved → PM merges
-                       → Changes requested → Coding Agent fixes → re-review
-```
-
 ## Design System
 
 **Warm, food-focused aesthetic.** Cream/off-white background, terracotta accent color, generous whitespace, large food photography, card-based layouts.
