@@ -1,15 +1,6 @@
 import type { Client } from "@libsql/client";
 
 export async function initializeSchema(db: Client): Promise<void> {
-  // Migration: add is_public column to existing recipes tables
-  try {
-    await db.execute(
-      "ALTER TABLE recipes ADD COLUMN is_public INTEGER NOT NULL DEFAULT 1"
-    );
-  } catch {
-    // Column already exists — ignore
-  }
-
   await db.executeMultiple(`
     -- BetterAuth tables
     CREATE TABLE IF NOT EXISTS user (
