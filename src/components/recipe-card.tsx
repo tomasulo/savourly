@@ -10,7 +10,6 @@ import { UtensilsCrossed, Tag, Clock, Lock, Bookmark } from "lucide-react";
 
 interface RecipeCardProps {
   recipe: RecipeListItem;
-  currentUserId?: string | null;
 }
 
 export function RecipeCard({ recipe }: RecipeCardProps) {
