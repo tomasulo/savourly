@@ -38,7 +38,7 @@ export async function getRecipeWithDetails(id: number): Promise<RecipeWithDetail
     cook_time_minutes: row[7] as number | null,
     servings: row[8] as number,
     image_url: row[9] as string | null,
-    is_public: row[10] as number,
+    is_public: row[10] as 0 | 1,
     created_at: row[11] as string,
     updated_at: row[12] as string,
   };
@@ -110,7 +110,7 @@ function mapRecipeListRow(row: ArrayLike<unknown>): RecipeListItem {
     cook_time_minutes: row[7] as number | null,
     servings: row[8] as number,
     image_url: row[9] as string | null,
-    is_public: row[10] as number,
+    is_public: row[10] as 0 | 1,
     created_at: row[11] as string,
     updated_at: row[12] as string,
     is_own: Boolean(row[13]),
