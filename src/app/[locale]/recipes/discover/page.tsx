@@ -60,7 +60,7 @@ export default async function DiscoverPage({ searchParams }: DiscoverPageProps) 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recipes.map((recipe) => (
               <div key={recipe.id} className="flex flex-col gap-2">
-                <RecipeCard recipe={recipe} currentUserId={userId} />
+                <RecipeCard recipe={recipe} />
                 {userId && (
                   <BookmarkButton recipeId={recipe.id} isFavorited={recipe.is_favorited} />
                 )}
