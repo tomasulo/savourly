@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getLocale } from "next-intl/server";
 import { requireAuth } from "@/lib/auth-helpers";
 import { addFavorite, removeFavorite } from "@/db/queries";
 import { getDb } from "@/db/index";
@@ -20,8 +21,9 @@ export async function addFavoriteAction(recipeId: number): Promise<void> {
   }
 
   await addFavorite(userId, recipeId);
-  revalidatePath("/recipes");
-  revalidatePath("/recipes/discover");
+  const locale = await getLocale();
+  revalidatePath(`/${locale}/recipes`);
+  revalidatePath(`/${locale}/recipes/discover`);
 }
 
 export async function removeFavoriteAction(recipeId: number): Promise<void> {
@@ -29,6 +31,7 @@ export async function removeFavoriteAction(recipeId: number): Promise<void> {
   const userId = session.user.id;
 
   await removeFavorite(userId, recipeId);
-  revalidatePath("/recipes");
-  revalidatePath("/recipes/discover");
+  const locale = await getLocale();
+  revalidatePath(`/${locale}/recipes`);
+  revalidatePath(`/${locale}/recipes/discover`);
 }
