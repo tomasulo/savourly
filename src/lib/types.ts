@@ -3,7 +3,7 @@ export interface Recipe {
   user_id: string;
   title: string;
   description: string | null;
-  cuisine: string | null;
+  tags: string[];
   difficulty: "easy" | "medium" | "hard";
   prep_time_minutes: number | null;
   cook_time_minutes: number | null;

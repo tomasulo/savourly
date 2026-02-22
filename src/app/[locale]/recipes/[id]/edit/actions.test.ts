@@ -60,7 +60,6 @@ describe('Recipe Edit Actions', () => {
       const formData = new FormData()
       formData.set('title', 'Updated Carbonara')
       formData.set('description', 'Updated description')
-      formData.set('cuisine', 'Italian')
       formData.set('difficulty', 'medium')
       formData.set('prep_time_minutes', '15')
       formData.set('cook_time_minutes', '25')
@@ -82,14 +81,15 @@ describe('Recipe Edit Actions', () => {
       expect(mockDb.batch).toHaveBeenCalled()
       const batchCalls = mockDb.batch.mock.calls[0][0]
 
-      // Check that batch includes UPDATE, DELETE ingredients, DELETE instructions
-      expect(batchCalls).toHaveLength(3)
+      // Check that batch includes UPDATE, DELETE ingredients, DELETE instructions, DELETE recipe_tags
+      expect(batchCalls).toHaveLength(4)
       expect(batchCalls[0].sql).toContain('UPDATE recipes')
       expect(batchCalls[1].sql).toContain('DELETE FROM ingredients')
       expect(batchCalls[2].sql).toContain('DELETE FROM instructions')
+      expect(batchCalls[3].sql).toContain('DELETE FROM recipe_tags')
 
-      // Verify second batch call for inserts
-      expect(mockDb.batch).toHaveBeenCalledTimes(3) // update/delete batch + ingredients batch + instructions batch
+      // Verify batch calls for inserts (update/delete batch + ingredients batch + instructions batch)
+      expect(mockDb.batch).toHaveBeenCalledTimes(3)
     })
 
     it('should return error when title is missing', async () => {

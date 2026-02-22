@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import type { RecipeListItem } from "@/lib/types";
-import { UtensilsCrossed, Globe, Clock, Lock, Bookmark } from "lucide-react";
+import { UtensilsCrossed, Tag, Clock, Lock, Bookmark } from "lucide-react";
 
 interface RecipeCardProps {
   recipe: RecipeListItem;
@@ -55,11 +55,11 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
                 </div>
               )}
 
-              {/* Cuisine badge floating on image */}
-              {recipe.cuisine && (
+              {/* Tag badge floating on image */}
+              {recipe.tags.length > 0 && (
                 <div className="absolute top-3 right-3">
                   <Badge className="bg-white/90 backdrop-blur-sm text-foreground border-0 shadow-lg flex items-center gap-1">
-                    <Globe size={14} /> {recipe.cuisine}
+                    <Tag size={14} /> {recipe.tags[0]}
                   </Badge>
                 </div>
               )}

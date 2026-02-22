@@ -70,7 +70,6 @@ export async function initializeSchema(db: Client): Promise<void> {
       user_id TEXT NOT NULL DEFAULT '1',
       title TEXT NOT NULL,
       description TEXT,
-      cuisine TEXT,
       difficulty TEXT NOT NULL DEFAULT 'medium' CHECK (difficulty IN ('easy', 'medium', 'hard')),
       prep_time_minutes INTEGER,
       cook_time_minutes INTEGER,
@@ -80,6 +79,16 @@ export async function initializeSchema(db: Client): Promise<void> {
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS recipe_tags (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      recipe_id INTEGER NOT NULL,
+      tag TEXT NOT NULL,
+      UNIQUE(recipe_id, tag),
+      FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_recipe_tags_recipe_id ON recipe_tags(recipe_id);
+    CREATE INDEX IF NOT EXISTS idx_recipe_tags_tag ON recipe_tags(tag);
 
     CREATE TABLE IF NOT EXISTS ingredients (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -110,7 +119,6 @@ export async function initializeSchema(db: Client): Promise<void> {
     );
 
     -- Indexes for improved query performance
-    CREATE INDEX IF NOT EXISTS idx_recipes_cuisine ON recipes(cuisine);
     CREATE INDEX IF NOT EXISTS idx_recipes_difficulty ON recipes(difficulty);
     CREATE INDEX IF NOT EXISTS idx_recipes_user_id ON recipes(user_id);
     CREATE INDEX IF NOT EXISTS idx_recipes_created_at ON recipes(created_at);

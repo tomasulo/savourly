@@ -1,4 +1,4 @@
-import { getMyRecipes, getAllCuisines } from "@/db/queries";
+import { getMyRecipes, getAllTags } from "@/db/queries";
 import { RecipeCard } from "@/components/recipe-card";
 import { SearchBar } from "./search-bar";
 import { FilterChips } from "./filter-chips";
@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 interface RecipesPageProps {
   searchParams: Promise<{
     q?: string;
-    cuisine?: string;
+    tag?: string;
     difficulty?: string;
   }>;
   params: Promise<{ locale: string }>;
@@ -39,12 +39,12 @@ export default async function RecipesPage({ searchParams, params }: RecipesPageP
 
   const filters = {
     query: resolvedParams.q,
-    cuisine: resolvedParams.cuisine,
+    tag: resolvedParams.tag,
     difficulty: resolvedParams.difficulty,
   };
 
   const recipes = await getMyRecipes(userId, filters);
-  const allCuisines = await getAllCuisines();
+  const allTags = await getAllTags();
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,7 +62,7 @@ export default async function RecipesPage({ searchParams, params }: RecipesPageP
           <SearchBar />
 
           {/* Filter Chips */}
-          <FilterChips cuisines={allCuisines} />
+          <FilterChips tags={allTags} />
         </div>
       </div>
 

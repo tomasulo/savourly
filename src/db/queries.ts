@@ -12,10 +12,12 @@ export async function getRecipeWithDetails(id: number): Promise<RecipeWithDetail
   const db = await getDb();
 
   const recipeResult = await db.execute({
-    sql: `SELECT id, user_id, title, description, cuisine, difficulty,
-                 prep_time_minutes, cook_time_minutes, servings, image_url,
-                 is_public, created_at, updated_at
-          FROM recipes WHERE id = ?`,
+    sql: `SELECT r.id, r.user_id, r.title, r.description,
+                 (SELECT GROUP_CONCAT(rt.tag) FROM recipe_tags rt WHERE rt.recipe_id = r.id) AS tags,
+                 r.difficulty,
+                 r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
+                 r.is_public, r.created_at, r.updated_at
+          FROM recipes r WHERE r.id = ?`,
     args: [id],
   });
 
@@ -24,12 +26,13 @@ export async function getRecipeWithDetails(id: number): Promise<RecipeWithDetail
   }
 
   const row = recipeResult.rows[0];
+  const tagsStr = row[4] as string | null;
   const recipe: Recipe = {
     id: row[0] as number,
     user_id: row[1] as string,
     title: row[2] as string,
     description: row[3] as string | null,
-    cuisine: row[4] as string | null,
+    tags: tagsStr ? tagsStr.split(",") : [],
     difficulty: row[5] as "easy" | "medium" | "hard",
     prep_time_minutes: row[6] as number | null,
     cook_time_minutes: row[7] as number | null,
@@ -89,18 +92,19 @@ export async function getCookingLogs(recipeId: number): Promise<CookingLog[]> {
 
 export interface RecipeFilters {
   query?: string;
-  cuisine?: string;
+  tag?: string;
   difficulty?: string;
   userId?: string;
 }
 
 function mapRecipeListRow(row: ArrayLike<unknown>): RecipeListItem {
+  const tagsStr = row[4] as string | null;
   return {
     id: row[0] as number,
     user_id: row[1] as string,
     title: row[2] as string,
     description: row[3] as string | null,
-    cuisine: row[4] as string | null,
+    tags: tagsStr ? tagsStr.split(",") : [],
     difficulty: row[5] as "easy" | "medium" | "hard",
     prep_time_minutes: row[6] as number | null,
     cook_time_minutes: row[7] as number | null,
@@ -114,6 +118,8 @@ function mapRecipeListRow(row: ArrayLike<unknown>): RecipeListItem {
   };
 }
 
+const TAGS_SUBQUERY = "(SELECT GROUP_CONCAT(rt.tag) FROM recipe_tags rt WHERE rt.recipe_id = r.id)";
+
 export async function getRecipes(filters?: RecipeFilters): Promise<RecipeListItem[]> {
   const db = await getDb();
   const userId = filters?.userId;
@@ -122,8 +128,9 @@ export async function getRecipes(filters?: RecipeFilters): Promise<RecipeListIte
   const args: (string | number)[] = [];
 
   if (userId) {
-    // Authenticated: show own recipes (incl. private) + favorited public recipes
-    sql = `SELECT r.id, r.user_id, r.title, r.description, r.cuisine, r.difficulty,
+    sql = `SELECT r.id, r.user_id, r.title, r.description,
+                  ${TAGS_SUBQUERY} AS tags,
+                  r.difficulty,
                   r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                   r.is_public, r.created_at, r.updated_at,
                   (CASE WHEN r.user_id = ? THEN 1 ELSE 0 END) AS is_own,
@@ -133,8 +140,9 @@ export async function getRecipes(filters?: RecipeFilters): Promise<RecipeListIte
            WHERE (r.user_id = ? OR (r.is_public = 1 AND f.id IS NOT NULL))`;
     args.push(userId, userId, userId);
   } else {
-    // Guest: show all public recipes
-    sql = `SELECT r.id, r.user_id, r.title, r.description, r.cuisine, r.difficulty,
+    sql = `SELECT r.id, r.user_id, r.title, r.description,
+                  ${TAGS_SUBQUERY} AS tags,
+                  r.difficulty,
                   r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                   r.is_public, r.created_at, r.updated_at,
                   0 AS is_own, 0 AS is_favorited
@@ -147,9 +155,9 @@ export async function getRecipes(filters?: RecipeFilters): Promise<RecipeListIte
     args.push(`%${filters.query}%`);
   }
 
-  if (filters?.cuisine) {
-    sql += " AND r.cuisine = ?";
-    args.push(filters.cuisine);
+  if (filters?.tag) {
+    sql += " AND EXISTS (SELECT 1 FROM recipe_tags rt2 WHERE rt2.recipe_id = r.id AND rt2.tag = ?)";
+    args.push(filters.tag);
   }
 
   if (filters?.difficulty) {
@@ -167,7 +175,9 @@ export async function getMyRecipes(userId: string, filters?: Omit<RecipeFilters,
   const db = await getDb();
   const args: (string | number)[] = [userId, userId, userId];
 
-  let sql = `SELECT r.id, r.user_id, r.title, r.description, r.cuisine, r.difficulty,
+  let sql = `SELECT r.id, r.user_id, r.title, r.description,
+                    ${TAGS_SUBQUERY} AS tags,
+                    r.difficulty,
                     r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                     r.is_public, r.created_at, r.updated_at,
                     (CASE WHEN r.user_id = ? THEN 1 ELSE 0 END) AS is_own,
@@ -181,9 +191,9 @@ export async function getMyRecipes(userId: string, filters?: Omit<RecipeFilters,
     args.push(`%${filters.query}%`);
   }
 
-  if (filters?.cuisine) {
-    sql += " AND r.cuisine = ?";
-    args.push(filters.cuisine);
+  if (filters?.tag) {
+    sql += " AND EXISTS (SELECT 1 FROM recipe_tags rt2 WHERE rt2.recipe_id = r.id AND rt2.tag = ?)";
+    args.push(filters.tag);
   }
 
   if (filters?.difficulty) {
@@ -204,9 +214,10 @@ export async function getDiscoverRecipes(userId: string | null, filters?: Omit<R
   let args: (string | number)[];
 
   if (userId) {
-    // Authenticated: public recipes from other users, with favorite status
     args = [userId, userId];
-    sql = `SELECT r.id, r.user_id, r.title, r.description, r.cuisine, r.difficulty,
+    sql = `SELECT r.id, r.user_id, r.title, r.description,
+                  ${TAGS_SUBQUERY} AS tags,
+                  r.difficulty,
                   r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                   r.is_public, r.created_at, r.updated_at,
                   0 AS is_own,
@@ -215,9 +226,10 @@ export async function getDiscoverRecipes(userId: string | null, filters?: Omit<R
            LEFT JOIN favorites f ON f.recipe_id = r.id AND f.user_id = ?
            WHERE r.is_public = 1 AND r.user_id != ?`;
   } else {
-    // Guest: all public recipes
     args = [];
-    sql = `SELECT r.id, r.user_id, r.title, r.description, r.cuisine, r.difficulty,
+    sql = `SELECT r.id, r.user_id, r.title, r.description,
+                  ${TAGS_SUBQUERY} AS tags,
+                  r.difficulty,
                   r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                   r.is_public, r.created_at, r.updated_at,
                   0 AS is_own,
@@ -231,9 +243,9 @@ export async function getDiscoverRecipes(userId: string | null, filters?: Omit<R
     args.push(`%${filters.query}%`);
   }
 
-  if (filters?.cuisine) {
-    sql += " AND r.cuisine = ?";
-    args.push(filters.cuisine);
+  if (filters?.tag) {
+    sql += " AND EXISTS (SELECT 1 FROM recipe_tags rt2 WHERE rt2.recipe_id = r.id AND rt2.tag = ?)";
+    args.push(filters.tag);
   }
 
   if (filters?.difficulty) {
@@ -247,11 +259,11 @@ export async function getDiscoverRecipes(userId: string | null, filters?: Omit<R
   return result.rows.map(mapRecipeListRow);
 }
 
-export async function getAllCuisines(): Promise<string[]> {
+export async function getAllTags(): Promise<string[]> {
   const db = await getDb();
 
   const result = await db.execute(
-    "SELECT DISTINCT cuisine FROM recipes WHERE cuisine IS NOT NULL AND is_public = 1 ORDER BY cuisine ASC"
+    "SELECT DISTINCT tag FROM recipe_tags rt JOIN recipes r ON r.id = rt.recipe_id WHERE r.is_public = 1 ORDER BY tag ASC"
   );
 
   return result.rows.map((row) => row[0] as string);

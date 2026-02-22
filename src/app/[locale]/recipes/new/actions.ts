@@ -23,7 +23,6 @@ export async function createRecipe(
 
   const title = formData.get("title") as string | null;
   const description = formData.get("description") as string | null;
-  const cuisine = formData.get("cuisine") as string | null;
   const difficulty = formData.get("difficulty") as string | null;
   const prepTime = formData.get("prep_time_minutes") as string | null;
   const cookTime = formData.get("cook_time_minutes") as string | null;
@@ -36,6 +35,7 @@ export async function createRecipe(
   const ingredientAmounts = formData.getAll("ingredient_amount") as string[];
   const ingredientUnits = formData.getAll("ingredient_unit") as string[];
 
+  const tags = formData.getAll("tags") as string[];
   const instructionContents = formData.getAll("instruction") as string[];
 
   // Server-side validation
@@ -66,13 +66,12 @@ export async function createRecipe(
 
   // Insert recipe with user_id from session
   const recipeResult = await db.execute({
-    sql: `INSERT INTO recipes (user_id, title, description, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url, is_public)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    sql: `INSERT INTO recipes (user_id, title, description, difficulty, prep_time_minutes, cook_time_minutes, servings, image_url, is_public)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       session.user.id,
       title.trim(),
       description?.trim() || null,
-      cuisine?.trim() || null,
       difficulty || "medium",
       prepTime ? parseInt(prepTime, 10) : null,
       cookTime ? parseInt(cookTime, 10) : null,
@@ -113,12 +112,25 @@ export async function createRecipe(
     stepNumber++;
   }
 
+  // Prepare tag statements
+  const tagStatements: { sql: string; args: (string | number | bigint)[] }[] = [];
+  for (const tag of tags) {
+    if (tag.trim().length === 0) continue;
+    tagStatements.push({
+      sql: `INSERT INTO recipe_tags (recipe_id, tag) VALUES (?, ?)`,
+      args: [recipeId as bigint | number, tag.trim()],
+    });
+  }
+
   // Execute all statements in batch
   if (ingredientStatements.length > 0) {
     await db.batch(ingredientStatements, "write");
   }
   if (instructionStatements.length > 0) {
     await db.batch(instructionStatements, "write");
+  }
+  if (tagStatements.length > 0) {
+    await db.batch(tagStatements, "write");
   }
 
   const locale = await getLocale();

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { RecipeWithDetails, CookingLog } from "@/lib/types";
-import { Clock, Flame, Timer, Users, BarChart3, Globe, Star, UtensilsCrossed, Bookmark } from "lucide-react";
+import { Clock, Flame, Timer, Users, BarChart3, Tag, Star, UtensilsCrossed, Bookmark } from "lucide-react";
 import { addFavoriteAction, removeFavoriteAction } from "./actions";
 
 interface RecipeDetailProps {
@@ -212,12 +212,16 @@ export function RecipeDetail({ recipe, cookingLogs, currentUserId, isFavorited }
                   </Badge>
                 </div>
               </div>
-              {recipe.cuisine && (
+              {recipe.tags.length > 0 && (
                 <div className="flex items-center gap-2">
-                  <Globe size={24} className="text-muted-foreground" />
+                  <Tag size={24} className="text-muted-foreground" />
                   <div>
-                    <div className="text-sm text-muted-foreground">{t("cuisine")}</div>
-                    <div className="font-semibold">{recipe.cuisine}</div>
+                    <div className="text-sm text-muted-foreground">{t("tags")}</div>
+                    <div className="flex flex-wrap gap-1">
+                      {recipe.tags.map((tag) => (
+                        <Badge key={tag} variant="secondary">{tag}</Badge>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}

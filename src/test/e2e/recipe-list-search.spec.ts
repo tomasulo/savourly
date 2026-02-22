@@ -104,9 +104,9 @@ test.describe('Recipe List and Search Flow', () => {
 
   test('should display filter chips', async ({ page }) => {
     // The filter chips should be visible
-    const filterSection = page.locator('text=/Cuisine|Difficulty/i').first()
+    const filterSection = page.locator('text=/Tags|Difficulty/i').first()
 
-    // Filter chips might not be visible if there are no cuisines
+    // Filter chips might not be visible if there are no tags
     // So we just check the page loaded correctly
     await expect(page.locator('h1')).toContainText('Recipes')
   })
