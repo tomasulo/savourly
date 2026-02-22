@@ -36,7 +36,7 @@ export function RecipeDetail({ recipe, cookingLogs, currentUserId, isFavorited }
     !isOwner &&
     recipe.is_public === 1;
 
-  const servingMultiplier = servings / recipe.servings;
+  const servingMultiplier = recipe.servings > 0 ? servings / recipe.servings : 1;
 
   const toggleIngredient = (id: number) => {
     const newChecked = new Set(checkedIngredients);
