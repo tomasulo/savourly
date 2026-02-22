@@ -33,7 +33,7 @@ export function SearchBar() {
       }
 
       router.replace(`${pathname}?${params.toString()}`);
-    }, 150); // Debounce search (reduced from 300ms for snappier feel)
+    }, 400); // Debounce search to reduce server round-trips
 
     return () => clearTimeout(timeoutId);
   }, [query, pathname, router]);
