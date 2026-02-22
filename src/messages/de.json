@@ -124,6 +124,7 @@
     "login": "Anmelden",
     "register": "Registrieren",
     "logout": "Abmelden",
+    "name": "Name",
     "email": "E-Mail",
     "password": "Passwort",
     "confirmPassword": "Passwort bestätigen",
