@@ -228,23 +228,6 @@ test.describe('Feature Flow', () => {
 7. **Keep vi.mock calls correct.** When using `vi.mock` with variables, use `vi.hoisted()` to avoid hoisting issues. This is a common Vitest pitfall.
 8. **Prioritize this order:** code → build → test → fix → commit → push → PR. Never reorder.
 
-## Development Workflow
-
-### Single-Agent Workflow (Cost-Optimized)
-Sonnet implements issues. PM (Opus) orchestrates, reviews, and merges. Sonnet does NOT merge.
-
-```
-For each issue:
-1. Read issue from GitHub: gh issue view <N>
-2. Read only the files you need to modify
-3. Create branch: git checkout -b issue-<N>-<slug> main
-4. Implement the feature
-5. Run: npm run build — must pass with zero errors
-6. Run: npm run test -- --run — fix any failures
-7. Commit (conventional commits), push, create PR via gh
-8. Do NOT merge — PM reviews and merges
-```
-
 ## Deployment
 - **Platform:** Vercel
 - **Database:** Turso hosted (libsql://...) — configure via `TURSO_DATABASE_URL` + `TURSO_AUTH_TOKEN`
