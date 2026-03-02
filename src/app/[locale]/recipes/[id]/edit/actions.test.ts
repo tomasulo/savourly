@@ -102,7 +102,7 @@ describe('Recipe Edit Actions', () => {
 
       const result = await updateRecipe(1, {}, formData)
 
-      expect(result.error).toBe('Title is required.')
+      expect(result.error).toBe('errors.titleRequired')
       expect(mockDb.batch).not.toHaveBeenCalled()
     })
 
@@ -117,7 +117,7 @@ describe('Recipe Edit Actions', () => {
 
       const result = await updateRecipe(1, {}, formData)
 
-      expect(result.error).toBe('Invalid difficulty level.')
+      expect(result.error).toBe('errors.invalidDifficulty')
       expect(mockDb.batch).not.toHaveBeenCalled()
     })
 
@@ -131,7 +131,7 @@ describe('Recipe Edit Actions', () => {
 
       const result = await updateRecipe(1, {}, formData)
 
-      expect(result.error).toBe('At least one ingredient is required.')
+      expect(result.error).toBe('errors.ingredientRequired')
       expect(mockDb.batch).not.toHaveBeenCalled()
     })
 
@@ -145,7 +145,7 @@ describe('Recipe Edit Actions', () => {
 
       const result = await updateRecipe(1, {}, formData)
 
-      expect(result.error).toBe('At least one instruction step is required.')
+      expect(result.error).toBe('errors.instructionRequired')
       expect(mockDb.batch).not.toHaveBeenCalled()
     })
 
