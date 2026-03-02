@@ -115,10 +115,12 @@ function mapRecipeListRow(row: ArrayLike<unknown>): RecipeListItem {
     updated_at: row[12] as string,
     is_own: Boolean(row[13]),
     is_favorited: Boolean(row[14]),
+    last_cooked_at: (row[15] as string | null) ?? null,
   };
 }
 
 const TAGS_SUBQUERY = "(SELECT GROUP_CONCAT(rt.tag) FROM recipe_tags rt WHERE rt.recipe_id = r.id)";
+const LAST_COOKED_SUBQUERY = "(SELECT MAX(cl.cooked_at) FROM cooking_logs cl WHERE cl.recipe_id = r.id AND cl.user_id = ?)";
 
 export async function getRecipes(filters?: RecipeFilters): Promise<RecipeListItem[]> {
   const db = await getDb();
@@ -134,18 +136,19 @@ export async function getRecipes(filters?: RecipeFilters): Promise<RecipeListIte
                   r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                   r.is_public, r.created_at, r.updated_at,
                   (CASE WHEN r.user_id = ? THEN 1 ELSE 0 END) AS is_own,
-                  (CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END) AS is_favorited
+                  (CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END) AS is_favorited,
+                  ${LAST_COOKED_SUBQUERY} AS last_cooked_at
            FROM recipes r
            LEFT JOIN favorites f ON f.recipe_id = r.id AND f.user_id = ?
            WHERE (r.user_id = ? OR (r.is_public = 1 AND f.id IS NOT NULL))`;
-    args.push(userId, userId, userId);
+    args.push(userId, userId, userId, userId);
   } else {
     sql = `SELECT r.id, r.user_id, r.title, r.description,
                   ${TAGS_SUBQUERY} AS tags,
                   r.difficulty,
                   r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                   r.is_public, r.created_at, r.updated_at,
-                  0 AS is_own, 0 AS is_favorited
+                  0 AS is_own, 0 AS is_favorited, NULL AS last_cooked_at
            FROM recipes r
            WHERE r.is_public = 1`;
   }
@@ -173,7 +176,7 @@ export async function getRecipes(filters?: RecipeFilters): Promise<RecipeListIte
 
 export async function getMyRecipes(userId: string, filters?: Omit<RecipeFilters, "userId">): Promise<RecipeListItem[]> {
   const db = await getDb();
-  const args: (string | number)[] = [userId, userId, userId];
+  const args: (string | number)[] = [userId, userId, userId, userId];
 
   let sql = `SELECT r.id, r.user_id, r.title, r.description,
                     ${TAGS_SUBQUERY} AS tags,
@@ -181,7 +184,8 @@ export async function getMyRecipes(userId: string, filters?: Omit<RecipeFilters,
                     r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                     r.is_public, r.created_at, r.updated_at,
                     (CASE WHEN r.user_id = ? THEN 1 ELSE 0 END) AS is_own,
-                    (CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END) AS is_favorited
+                    (CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END) AS is_favorited,
+                    ${LAST_COOKED_SUBQUERY} AS last_cooked_at
              FROM recipes r
              LEFT JOIN favorites f ON f.recipe_id = r.id AND f.user_id = ?
              WHERE (r.user_id = ? OR (r.is_public = 1 AND f.id IS NOT NULL))`;
@@ -214,14 +218,15 @@ export async function getDiscoverRecipes(userId: string | null, filters?: Omit<R
   let args: (string | number)[];
 
   if (userId) {
-    args = [userId, userId];
+    args = [userId, userId, userId];
     sql = `SELECT r.id, r.user_id, r.title, r.description,
                   ${TAGS_SUBQUERY} AS tags,
                   r.difficulty,
                   r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                   r.is_public, r.created_at, r.updated_at,
                   0 AS is_own,
-                  (CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END) AS is_favorited
+                  (CASE WHEN f.id IS NOT NULL THEN 1 ELSE 0 END) AS is_favorited,
+                  ${LAST_COOKED_SUBQUERY} AS last_cooked_at
            FROM recipes r
            LEFT JOIN favorites f ON f.recipe_id = r.id AND f.user_id = ?
            WHERE r.is_public = 1 AND r.user_id != ?`;
@@ -233,7 +238,8 @@ export async function getDiscoverRecipes(userId: string | null, filters?: Omit<R
                   r.prep_time_minutes, r.cook_time_minutes, r.servings, r.image_url,
                   r.is_public, r.created_at, r.updated_at,
                   0 AS is_own,
-                  0 AS is_favorited
+                  0 AS is_favorited,
+                  NULL AS last_cooked_at
            FROM recipes r
            WHERE r.is_public = 1`;
   }
@@ -303,4 +309,40 @@ export async function isFavorited(userId: string, recipeId: number): Promise<boo
     args: [userId, recipeId],
   });
   return result.rows.length > 0;
+}
+
+export async function addCookingLog(
+  recipeId: number,
+  userId: string,
+  cookedAt: string,
+  rating: number | null,
+  notes: string | null
+): Promise<void> {
+  const db = await getDb();
+  await db.execute({
+    sql: "INSERT INTO cooking_logs (recipe_id, user_id, cooked_at, rating, notes) VALUES (?, ?, ?, ?, ?)",
+    args: [recipeId, userId, cookedAt, rating, notes],
+  });
+}
+
+export async function updateCookingLog(
+  id: number,
+  userId: string,
+  cookedAt: string,
+  rating: number | null,
+  notes: string | null
+): Promise<void> {
+  const db = await getDb();
+  await db.execute({
+    sql: "UPDATE cooking_logs SET cooked_at = ?, rating = ?, notes = ? WHERE id = ? AND user_id = ?",
+    args: [cookedAt, rating, notes, id, userId],
+  });
+}
+
+export async function deleteCookingLog(id: number, userId: string): Promise<void> {
+  const db = await getDb();
+  await db.execute({
+    sql: "DELETE FROM cooking_logs WHERE id = ? AND user_id = ?",
+    args: [id, userId],
+  });
 }

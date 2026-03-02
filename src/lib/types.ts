@@ -17,6 +17,7 @@ export interface Recipe {
 export interface RecipeListItem extends Recipe {
   is_own: boolean;
   is_favorited: boolean;
+  last_cooked_at: string | null;
 }
 
 export interface Favorite {

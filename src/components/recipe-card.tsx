@@ -4,9 +4,9 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import type { RecipeListItem } from "@/lib/types";
-import { UtensilsCrossed, Tag, Clock, Lock, Bookmark } from "lucide-react";
+import { UtensilsCrossed, Tag, Clock, Lock, Bookmark, ChefHat } from "lucide-react";
 
 interface RecipeCardProps {
   recipe: RecipeListItem;
@@ -16,6 +16,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
   const tDiff = useTranslations("difficulty");
   const tTime = useTranslations("time");
   const tRecipe = useTranslations("recipe");
+  const locale = useLocale();
 
   const totalTime =
     (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
@@ -106,7 +107,7 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             </p>
           )}
 
-          <div className="flex items-center gap-3 pt-2">
+          <div className="flex items-center gap-3 pt-2 flex-wrap">
             {totalTime > 0 && (
               <span className="text-sm text-muted-foreground flex items-center gap-1">
                 <Clock size={14} /> {totalTime} {tTime("minutes")}
@@ -123,6 +124,19 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
             >
               {tDiff(recipe.difficulty)}
             </Badge>
+
+            {recipe.last_cooked_at && (
+              <>
+                <span className="text-muted-foreground">•</span>
+                <span className="text-sm text-muted-foreground flex items-center gap-1">
+                  <ChefHat size={14} />
+                  {new Date(recipe.last_cooked_at).toLocaleDateString(locale, {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>

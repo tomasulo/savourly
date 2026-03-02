@@ -3,13 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { RecipeWithDetails, CookingLog } from "@/lib/types";
-import { Clock, Flame, Timer, Users, BarChart3, Tag, Star, UtensilsCrossed, Bookmark } from "lucide-react";
+import { Clock, Flame, Timer, Users, BarChart3, Tag, UtensilsCrossed, Bookmark } from "lucide-react";
 import { addFavoriteAction, removeFavoriteAction } from "./actions";
+import { CookingLogSection } from "./cooking-log-section";
 
 interface RecipeDetailProps {
   recipe: RecipeWithDetails;
@@ -23,7 +24,6 @@ export function RecipeDetail({ recipe, cookingLogs, currentUserId, isFavorited }
   const tDiff = useTranslations("difficulty");
   const tTime = useTranslations("time");
   const tCommon = useTranslations("common");
-  const locale = useLocale();
   const [servings, setServings] = useState(recipe.servings);
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(
     new Set()
@@ -313,52 +313,11 @@ export function RecipeDetail({ recipe, cookingLogs, currentUserId, isFavorited }
         </Card>
 
         {/* Cooking Logs Section */}
-        {cookingLogs.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">{t("cookingLog")}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {cookingLogs.map((log) => (
-                  <div
-                    key={log.id}
-                    className="border-l-2 border-primary pl-4 py-2"
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="text-sm text-muted-foreground">
-                        {new Date(log.cooked_at).toLocaleDateString(locale, {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </div>
-                      {log.rating !== null && (
-                        <div className="flex gap-0.5">
-                          {Array.from({ length: 5 }, (_, i) => (
-                            <Star
-                              key={i}
-                              size={16}
-                              className={
-                                i < (log.rating ?? 0)
-                                  ? "text-yellow-500 fill-yellow-500"
-                                  : "text-gray-300"
-                              }
-                              fill={i < (log.rating ?? 0) ? "currentColor" : "none"}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    {log.notes && (
-                      <p className="text-foreground">{log.notes}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <CookingLogSection
+          recipeId={recipe.id}
+          cookingLogs={cookingLogs}
+          currentUserId={currentUserId}
+        />
       </div>
     </div>
   );
