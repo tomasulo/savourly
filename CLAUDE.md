@@ -19,15 +19,17 @@ This repo is **100% AI-developed** — all coding is done by AI agents. Optimize
 
 ## Commands
 ```bash
-npm run dev           # Start dev server on http://localhost:3000
-npm run build         # Production build — MUST pass before opening a PR
-npm run lint          # ESLint check
-npm run start         # Start production server
-npm run test          # Run unit tests (watch mode)
-npm run test:ui       # Run unit tests with UI
-npm run test:coverage # Run unit tests with coverage report
-npm run test:e2e      # Run E2E tests with Playwright
-npm run test:e2e:ui   # Run E2E tests with Playwright UI
+make dev           # Start dev server on http://localhost:3000
+make build         # Production build — MUST pass before opening a PR
+make lint          # ESLint check
+make start         # Start production server
+make test          # Run unit tests (watch mode)
+make test-run      # Run unit tests once (CI mode)
+make test-coverage # Run unit tests with coverage report
+make test-e2e      # Run E2E tests with Playwright
+make test-e2e-ui   # Run E2E tests with Playwright UI
+make check         # Run lint + tests + build (full CI check)
+make deploy        # Deploy to Vercel (production)
 ```
 
 ## Design System
@@ -115,7 +117,7 @@ savourly/
 ## Git Conventions
 - **Branch naming:** `issue-<number>-<short-description>` (e.g., `issue-1-sqlite-schema`)
 - **Commits:** Conventional commits — `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`
-- **PRs:** Always run `npm run build` before opening a PR. PR title matches the issue title
+- **PRs:** Always run `make build` before opening a PR. PR title matches the issue title
 - **Never push directly to `main`** — always use feature branches + PRs
 - **Git identity (repo-local):** email `917136+tomasulo@users.noreply.github.com`, name `Thomas`
 
@@ -183,8 +185,8 @@ test.describe('Feature Flow', () => {
 ```
 
 ### Running Tests
-- Run `npm run test` before committing to ensure all unit tests pass
-- Run `npm run build` before opening PR (includes TypeScript check)
+- Run `make test-run` before committing to ensure all unit tests pass
+- Run `make build` before opening PR (includes TypeScript check)
 - E2E tests are optional during development but recommended for critical flows
 - QA agent will verify all tests pass during PR review
 
@@ -220,8 +222,8 @@ test.describe('Feature Flow', () => {
 **CRITICAL: Follow these rules to minimize token waste and maximize shipping speed.**
 
 1. **Never create documentation files** (*.md) unless the issue explicitly requests it. No implementation summaries, testing guides, or changelogs.
-2. **Build early, build often.** Run `npm run build` after core changes — don't wait until the end. This catches type errors before you've written 500 more lines.
-3. **Run tests early.** Run `npm run test -- --run` after modifying existing test files or adding new ones. Fix failures immediately.
+2. **Build early, build often.** Run `make build` after core changes — don't wait until the end. This catches type errors before you've written 500 more lines.
+3. **Run tests early.** Run `make test-run` after modifying existing test files or adding new ones. Fix failures immediately.
 4. **Ship before perfection.** Commit, push, and create the PR before running out of turns. A PR with minor issues is better than uncommitted code.
 5. **Don't read files you don't need.** Only read files directly relevant to your changes. Don't explore "just in case."
 6. **Don't write unused code.** No wrapper components, helper files, or abstractions you don't immediately use. Delete dead code.
