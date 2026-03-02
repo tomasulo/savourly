@@ -8,6 +8,7 @@ vi.mock("next-intl", () => ({
     const translations: Record<string, string> = {
       registerTitle: "Create account",
       registerSubtitle: "Get started with Savourly",
+      name: "Name",
       email: "Email",
       password: "Password",
       confirmPassword: "Confirm password",
@@ -62,11 +63,13 @@ describe("RegisterPage", () => {
   it("shows error when passwords do not match", async () => {
     render(<RegisterPage />);
 
+    const nameInput = screen.getByLabelText("Name");
     const emailInput = screen.getByLabelText("Email");
     const passwordInput = screen.getByLabelText("Password");
     const confirmPasswordInput = screen.getByLabelText("Confirm password");
     const submitButton = screen.getByRole("button", { name: "Register" });
 
+    fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
     fireEvent.change(passwordInput, { target: { value: "password123" } });
     fireEvent.change(confirmPasswordInput, {
@@ -84,11 +87,13 @@ describe("RegisterPage", () => {
 
     render(<RegisterPage />);
 
+    const nameInput = screen.getByLabelText("Name");
     const emailInput = screen.getByLabelText("Email");
     const passwordInput = screen.getByLabelText("Password");
     const confirmPasswordInput = screen.getByLabelText("Confirm password");
     const submitButton = screen.getByRole("button", { name: "Register" });
 
+    fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
     fireEvent.change(passwordInput, { target: { value: "password123" } });
     fireEvent.change(confirmPasswordInput, {

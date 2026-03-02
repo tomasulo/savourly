@@ -67,12 +67,12 @@ describe('SearchBar', () => {
     // Should not call immediately
     expect(mockReplace).not.toHaveBeenCalled()
 
-    // Should call after debounce delay (150ms)
+    // Should call after debounce delay (400ms)
     await waitFor(
       () => {
         expect(mockReplace).toHaveBeenCalledWith('/recipes?q=pasta')
       },
-      { timeout: 200 }
+      { timeout: 500 }
     )
   })
 
@@ -84,7 +84,7 @@ describe('SearchBar', () => {
 
     // Type something
     await user.type(input, 'pasta')
-    await waitFor(() => expect(mockReplace).toHaveBeenCalled(), { timeout: 200 })
+    await waitFor(() => expect(mockReplace).toHaveBeenCalled(), { timeout: 500 })
 
     // Clear the input
     await user.clear(input)
@@ -94,7 +94,7 @@ describe('SearchBar', () => {
         const lastCall = mockReplace.mock.calls[mockReplace.mock.calls.length - 1]
         expect(lastCall[0]).toBe('/recipes?')
       },
-      { timeout: 200 }
+      { timeout: 500 }
     )
   })
 

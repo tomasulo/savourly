@@ -25,6 +25,10 @@ vi.mock('next/cache', () => ({
   revalidatePath: vi.fn(),
 }))
 
+vi.mock('next-intl/server', () => ({
+  getLocale: vi.fn().mockResolvedValue('en'),
+}))
+
 import { addFavoriteAction, removeFavoriteAction } from './actions'
 import { getDb } from '@/db/index'
 import type { Client } from '@libsql/client'
