@@ -74,7 +74,16 @@
     "private": "Private",
     "public": "Public",
     "privateLabel": "Only you can see this recipe",
-    "publicLabel": "Anyone can see this recipe"
+    "publicLabel": "Anyone can see this recipe",
+    "errors": {
+      "loginRequired": "You must be logged in to perform this action.",
+      "titleRequired": "Title is required.",
+      "invalidDifficulty": "Invalid difficulty level.",
+      "ingredientRequired": "At least one ingredient is required.",
+      "instructionRequired": "At least one instruction step is required.",
+      "notFound": "Recipe not found.",
+      "unauthorized": "You can only edit your own recipes."
+    }
   },
   "difficulty": {
     "easy": "Easy",

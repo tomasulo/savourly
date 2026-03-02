@@ -18,7 +18,7 @@ export async function createRecipe(
   try {
     session = await requireAuth();
   } catch {
-    return { error: "You must be logged in to create a recipe." };
+    return { error: "errors.loginRequired" };
   }
 
   const title = formData.get("title") as string | null;
@@ -40,26 +40,26 @@ export async function createRecipe(
 
   // Server-side validation
   if (!title || title.trim().length === 0) {
-    return { error: "Title is required." };
+    return { error: "errors.titleRequired" };
   }
 
   const validDifficulties = ["easy", "medium", "hard"];
   if (difficulty && !validDifficulties.includes(difficulty)) {
-    return { error: "Invalid difficulty level." };
+    return { error: "errors.invalidDifficulty" };
   }
 
   const validIngredients = ingredientNames.filter(
     (name) => name.trim().length > 0
   );
   if (validIngredients.length === 0) {
-    return { error: "At least one ingredient is required." };
+    return { error: "errors.ingredientRequired" };
   }
 
   const validInstructions = instructionContents.filter(
     (content) => content.trim().length > 0
   );
   if (validInstructions.length === 0) {
-    return { error: "At least one instruction step is required." };
+    return { error: "errors.instructionRequired" };
   }
 
   const db = await getDb();

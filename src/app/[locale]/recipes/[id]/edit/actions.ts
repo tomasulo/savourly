@@ -19,7 +19,7 @@ export async function updateRecipe(
   try {
     session = await requireAuth();
   } catch {
-    return { error: "You must be logged in to edit a recipe." };
+    return { error: "errors.loginRequired" };
   }
 
   const db = await getDb();
@@ -31,12 +31,12 @@ export async function updateRecipe(
   });
 
   if (recipeResult.rows.length === 0) {
-    return { error: "Recipe not found." };
+    return { error: "errors.notFound" };
   }
 
   const recipeUserId = recipeResult.rows[0][0] as string;
   if (recipeUserId !== session.user.id) {
-    return { error: "You can only edit your own recipes." };
+    return { error: "errors.unauthorized" };
   }
 
   const title = formData.get("title") as string | null;
@@ -58,26 +58,26 @@ export async function updateRecipe(
 
   // Server-side validation
   if (!title || title.trim().length === 0) {
-    return { error: "Title is required." };
+    return { error: "errors.titleRequired" };
   }
 
   const validDifficulties = ["easy", "medium", "hard"];
   if (difficulty && !validDifficulties.includes(difficulty)) {
-    return { error: "Invalid difficulty level." };
+    return { error: "errors.invalidDifficulty" };
   }
 
   const validIngredients = ingredientNames.filter(
     (name) => name.trim().length > 0
   );
   if (validIngredients.length === 0) {
-    return { error: "At least one ingredient is required." };
+    return { error: "errors.ingredientRequired" };
   }
 
   const validInstructions = instructionContents.filter(
     (content) => content.trim().length > 0
   );
   if (validInstructions.length === 0) {
-    return { error: "At least one instruction step is required." };
+    return { error: "errors.instructionRequired" };
   }
 
   // Prepare all statements for batch execution

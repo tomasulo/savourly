@@ -85,7 +85,7 @@ export default function RecipeForm() {
     <form action={formAction} className="space-y-8">
       {state.error && (
         <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
-          {state.error}
+          {t(state.error as Parameters<typeof t>[0])}
         </div>
       )}
 

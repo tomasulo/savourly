@@ -74,7 +74,16 @@
     "private": "Privat",
     "public": "Öffentlich",
     "privateLabel": "Nur du kannst dieses Rezept sehen",
-    "publicLabel": "Jeder kann dieses Rezept sehen"
+    "publicLabel": "Jeder kann dieses Rezept sehen",
+    "errors": {
+      "loginRequired": "Du musst angemeldet sein, um diese Aktion auszuführen.",
+      "titleRequired": "Titel ist erforderlich.",
+      "invalidDifficulty": "Ungültige Schwierigkeitsstufe.",
+      "ingredientRequired": "Mindestens eine Zutat ist erforderlich.",
+      "instructionRequired": "Mindestens ein Zubereitungsschritt ist erforderlich.",
+      "notFound": "Rezept nicht gefunden.",
+      "unauthorized": "Du kannst nur deine eigenen Rezepte bearbeiten."
+    }
   },
   "difficulty": {
     "easy": "Einfach",
