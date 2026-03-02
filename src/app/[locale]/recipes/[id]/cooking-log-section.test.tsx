@@ -20,11 +20,12 @@ vi.mock("next-intl", () => ({
   useTranslations: (namespace: string) => {
     const translations: Record<string, Record<string, string>> = {
       recipe: {
-        cookingLog: "Cooking Log",
+        cookingLog: "Cooking History",
         logACook: "Log a Cook",
         cookedOn: "Cooked on",
         rating: "Rating",
         notes: "Notes",
+        notesPlaceholder: "How did it turn out?",
         timesCooked: "{count} times cooked",
         averageRating: "Avg. {rating}",
         confirmDeleteLog: "Delete this log entry?",
@@ -35,8 +36,8 @@ vi.mock("next-intl", () => ({
         delete: "Delete",
       },
       empty: {
-        noCookingLogs: "No cooking logs yet",
-        noCookingLogsDescription: "Log your first cook to start tracking",
+        noCookingLogs: "No cooking history yet",
+        noCookingLogsDescription: "Cook this recipe and log your experience!",
       },
     };
     return (key: string, params?: Record<string, string | number>) => {
@@ -79,14 +80,14 @@ describe("CookingLogSection", () => {
     render(
       <CookingLogSection recipeId={1} cookingLogs={[]} currentUserId={null} />
     );
-    expect(screen.getByText("Cooking Log")).toBeInTheDocument();
+    expect(screen.getByText("Cooking History")).toBeInTheDocument();
   });
 
   it("shows empty state when no logs", () => {
     render(
       <CookingLogSection recipeId={1} cookingLogs={[]} currentUserId={null} />
     );
-    expect(screen.getByText("No cooking logs yet")).toBeInTheDocument();
+    expect(screen.getByText("No cooking history yet")).toBeInTheDocument();
   });
 
   it("renders cooking log entries", () => {

@@ -35,6 +35,7 @@ function StarRating({
           <button
             key={i}
             type="button"
+            aria-label={`${i + 1} star`}
             onClick={() => onChange(i + 1)}
             onMouseEnter={() => setHovered(i + 1)}
             onMouseLeave={() => setHovered(0)}
@@ -57,7 +58,6 @@ function today(): string {
 }
 
 function LogForm({
-  recipeId,
   initialDate,
   initialRating,
   initialNotes,
@@ -65,7 +65,6 @@ function LogForm({
   onCancel,
   isPending,
 }: {
-  recipeId: number;
   initialDate: string;
   initialRating: number;
   initialNotes: string;
@@ -78,8 +77,6 @@ function LogForm({
   const [date, setDate] = useState(initialDate);
   const [rating, setRating] = useState(initialRating);
   const [notes, setNotes] = useState(initialNotes);
-
-  void recipeId;
 
   return (
     <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-4">
@@ -104,7 +101,7 @@ function LogForm({
         <Textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="..."
+          placeholder={t("notesPlaceholder")}
           rows={3}
         />
       </div>
@@ -219,10 +216,9 @@ export function CookingLogSection({
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className={`space-y-4 ${isPending ? "opacity-60 pointer-events-none" : ""}`}>
         {showAddForm && (
           <LogForm
-            recipeId={recipeId}
             initialDate={today()}
             initialRating={0}
             initialNotes=""
@@ -248,7 +244,6 @@ export function CookingLogSection({
             <div key={log.id}>
               {isEditing ? (
                 <LogForm
-                  recipeId={recipeId}
                   initialDate={log.cooked_at.split("T")[0]}
                   initialRating={log.rating ?? 0}
                   initialNotes={log.notes ?? ""}
