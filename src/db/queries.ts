@@ -269,6 +269,17 @@ export async function getAllTags(): Promise<string[]> {
   return result.rows.map((row) => row[0] as string);
 }
 
+export async function getUserTags(userId: string): Promise<string[]> {
+  const db = await getDb();
+
+  const result = await db.execute({
+    sql: "SELECT DISTINCT tag FROM recipe_tags rt JOIN recipes r ON r.id = rt.recipe_id WHERE r.is_public = 1 OR r.user_id = ? ORDER BY tag ASC",
+    args: [userId],
+  });
+
+  return result.rows.map((row) => row[0] as string);
+}
+
 export async function addFavorite(userId: string, recipeId: number): Promise<void> {
   const db = await getDb();
   await db.execute({

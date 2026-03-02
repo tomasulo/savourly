@@ -1,4 +1,4 @@
-import { getMyRecipes, getAllTags } from "@/db/queries";
+import { getMyRecipes, getUserTags } from "@/db/queries";
 import { RecipeCard } from "@/components/recipe-card";
 import { SearchBar } from "./search-bar";
 import { FilterChips } from "./filter-chips";
@@ -44,7 +44,7 @@ export default async function RecipesPage({ searchParams, params }: RecipesPageP
   };
 
   const recipes = await getMyRecipes(userId, filters);
-  const allTags = await getAllTags();
+  const allTags = await getUserTags(userId);
 
   return (
     <div className="min-h-screen bg-background">
