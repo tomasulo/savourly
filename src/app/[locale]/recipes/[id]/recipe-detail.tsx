@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ export function RecipeDetail({ recipe, cookingLogs, currentUserId, isFavorited }
   const tDiff = useTranslations("difficulty");
   const tTime = useTranslations("time");
   const tCommon = useTranslations("common");
+  const locale = useLocale();
   const [servings, setServings] = useState(recipe.servings);
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(
     new Set()
@@ -326,7 +327,7 @@ export function RecipeDetail({ recipe, cookingLogs, currentUserId, isFavorited }
                   >
                     <div className="flex items-center justify-between mb-1">
                       <div className="text-sm text-muted-foreground">
-                        {new Date(log.cooked_at).toLocaleDateString("en-US", {
+                        {new Date(log.cooked_at).toLocaleDateString(locale, {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
