@@ -22,6 +22,7 @@ vi.mock('next-intl', () => ({
     }
     return (key: string) => translations[namespace]?.[key] || key
   },
+  useLocale: () => 'en',
 }))
 
 // Mock next/image
@@ -54,6 +55,7 @@ const mockRecipe: RecipeListItem = {
   updated_at: '2024-01-01',
   is_own: true,
   is_favorited: false,
+  last_cooked_at: null,
 }
 
 describe('RecipeCard', () => {

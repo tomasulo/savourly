@@ -48,6 +48,24 @@ vi.mock("./actions", () => ({
   removeFavoriteAction: vi.fn(),
 }));
 
+vi.mock("./cooking-log-section", () => ({
+  CookingLogSection: ({ cookingLogs }: { cookingLogs: CookingLog[] }) => (
+    <div data-testid="cooking-log-section">
+      {cookingLogs.map((log) => (
+        <div key={log.id}>
+          <span>{new Date(log.cooked_at).toLocaleDateString(mockLocale.value, { year: "numeric", month: "long", day: "numeric" })}</span>
+          {log.rating !== null && (
+            <div>{Array.from({ length: 5 }, (_, i) => (
+              <svg key={i} className="lucide-star" />
+            ))}</div>
+          )}
+          {log.notes && <p>{log.notes}</p>}
+        </div>
+      ))}
+    </div>
+  ),
+}));
+
 const mockRecipe: RecipeWithDetails = {
   id: 1,
   user_id: "user-1",
@@ -101,10 +119,10 @@ describe("RecipeDetail", () => {
         isFavorited={false}
       />
     );
-    expect(screen.getByText("Cooking Log")).toBeInTheDocument();
+    expect(screen.getByTestId("cooking-log-section")).toBeInTheDocument();
   });
 
-  it("does not render cooking log section when no logs", () => {
+  it("renders cooking log section even when no logs", () => {
     render(
       <RecipeDetail
         recipe={mockRecipe}
@@ -113,7 +131,7 @@ describe("RecipeDetail", () => {
         isFavorited={false}
       />
     );
-    expect(screen.queryByText("Cooking Log")).not.toBeInTheDocument();
+    expect(screen.getByTestId("cooking-log-section")).toBeInTheDocument();
   });
 
   it("formats cooking log date using en locale", () => {
